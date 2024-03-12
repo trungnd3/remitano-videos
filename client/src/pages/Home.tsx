@@ -4,59 +4,73 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardImage,
   CardTitle,
 } from '@/components/ui/card';
 import { Heading } from '@/components/common';
+import { useNavigate } from 'react-router-dom';
+import { MouseEventHandler } from 'react';
 
 const videos = [
   {
     id: '1',
-    title: 'Movie',
+    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
+    title: 'Back End Developer Roadmap 2024',
     sharedBy: 'trungnguyen@gmail.com',
     likes: 12,
     dislike: 3,
     description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   },
   {
     id: '2',
-    title: 'Movie',
+    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
+    title: 'Back End Developer Roadmap 2024',
     sharedBy: 'trungnguyen@gmail.com',
     likes: 12,
     dislike: 3,
     description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   },
   {
     id: '3',
-    title: 'Movie',
+    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
+    title: 'Back End Developer Roadmap 2024',
     sharedBy: 'trungnguyen@gmail.com',
     likes: 12,
     dislike: 3,
     description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   },
   {
     id: '4',
-    title: 'Movie',
+    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
+    title: 'Back End Developer Roadmap 2024',
     sharedBy: 'trungnguyen@gmail.com',
     likes: 12,
     dislike: 3,
     description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   },
   {
     id: '5',
-    title: 'Movie',
+    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
+    title: 'Back End Developer Roadmap 2024',
     sharedBy: 'trungnguyen@gmail.com',
     likes: 12,
     dislike: 3,
     description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   },
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const cardClickHandler: MouseEventHandler<HTMLDivElement> = (event) => {
+    navigate(`/play/${event.currentTarget?.id}`);
+  };
+
   return (
     <>
       <Heading
@@ -65,15 +79,24 @@ export default function Home() {
       />
       <div className='my-8 grid grid-cols sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
         {videos.map((video) => (
-          <Card key={video.id}>
-            <CardHeader>
+          <Card
+            key={video.id}
+            id={video.id}
+            onClick={cardClickHandler}
+            className='cursor-pointer'
+          >
+            <CardImage
+              className='w-full'
+              src={video.thumbnail}
+              alt={video.title}
+            />
+            <CardHeader className='px-2'>
               <CardTitle>{video.title}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
+            <CardContent className='px-2'>
               <CardDescription>{video.description}</CardDescription>
             </CardContent>
-            <CardFooter>
+            <CardFooter className='px-2'>
               <p>Card Footer</p>
             </CardFooter>
           </Card>

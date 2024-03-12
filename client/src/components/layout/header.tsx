@@ -2,19 +2,17 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Navbar from './navbar';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/common';
 
 export default function Header() {
   const navigate = useNavigate();
 
   return (
-    <header className='sticky top-0 w-full'>
+    <header className='sticky top-0 w-full z-10 bg-slate-100'>
       <div className='container flex h-14 max-w-screen-2xl items-center'>
         <div className='mr-4 hidden md:flex'>
           <Link to='/' className='flex items-center justify-start'>
-            <img src='/logo-black.svg' alt='Logo' className='w-10 h-10' />
-            <span className='hidden font-bold sm:inline-block'>
-              Funny Videos
-            </span>
+            <Logo />
           </Link>
           <Navbar />
         </div>
@@ -23,7 +21,7 @@ export default function Header() {
           <Button variant='default' onClick={() => navigate('/share')}>
             Share a movie
           </Button>
-          <Button variant='secondary' className=''>
+          <Button variant='outline' className=''>
             Logout
           </Button>
         </div>

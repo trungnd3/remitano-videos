@@ -11,7 +11,7 @@ export default function Layout({
     <div className='relative flex min-h-screen flex-col bg-background'>
       <Header />
       <main className='flex-1'>
-        <div className='container'>{children}</div>
+        <div className='container mt-4'>{children}</div>
       </main>
       <Footer />
     </div>

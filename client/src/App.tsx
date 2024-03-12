@@ -10,7 +10,9 @@ function App() {
     <Layout>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/play/:id' element={<Play />} />
+        <Route path='/play' element={<Play />}>
+          <Route path=':id' />
+        </Route>
         <Route path='/share' element={<Share />} />
       </Routes>
     </Layout>

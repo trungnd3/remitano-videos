@@ -1,7 +1,7 @@
 import React from 'react';
 import Footer from './footer';
 import Header from './header';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/src/components/ui/toaster';
 
 export default function Layout({
   children,

@@ -1,4 +1,4 @@
-import { ShareForm } from '@/components/forms';
+import { ShareForm } from '@/src/components/forms';
 
 export default function Share() {
   const submitHandler = (url: string) => {

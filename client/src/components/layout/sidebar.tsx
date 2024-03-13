@@ -4,11 +4,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { authActions, useAppDispatch } from '@/store';
+} from '@/src/components/ui/sheet';
+import { Separator } from '@/src/components/ui/separator';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/src/components/ui/avatar';
+import { Button } from '@/src/components/ui/button';
+import { authActions, useAppDispatch } from '@/src/store';
 
 export default function Sidebar() {
   const dispatch = useAppDispatch();

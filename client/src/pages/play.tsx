@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Error, Heading } from '@/components/common';
-import { useAppSelector } from '@/store';
+import { AspectRatio } from '@/src/components/ui/aspect-ratio';
+import { Error, Heading } from '@/src/components/common';
+import { useAppSelector } from '@/src/store';
 
 // TODO: integrate with video.js
 

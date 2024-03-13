@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardImage,
   CardTitle,
-} from '@/components/ui/card';
-import { useAppSelector } from '@/store';
+} from '@/src/components/ui/card';
+import { useAppSelector } from '@/src/store';
 
 export default function Home() {
   const navigate = useNavigate();

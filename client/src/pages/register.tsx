@@ -1,4 +1,4 @@
-import { AuthForm } from '@/components/forms';
+import { AuthForm } from '@/src/components/forms';
 
 export default function Register() {
   const submitHandler = (username: string, password: string) => {

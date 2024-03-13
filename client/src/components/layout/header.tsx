@@ -1,13 +1,12 @@
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Navbar from './navbar';
-import { Logo } from '@/components/common';
+import { Logo } from '@/src/components/common';
 import Sidebar from './sidebar';
-import { RootState } from '@/store/reducer';
+import { useAppSelector } from '@/src/store/reducer';
 
 export default function Header() {
-  const user = useSelector<RootState>((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   return (
     <header className='sticky top-0 w-full z-10 bg-slate-200'>

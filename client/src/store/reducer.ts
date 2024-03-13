@@ -3,14 +3,15 @@ import {
   Action,
   ThunkDispatch,
   combineReducers,
+  configureStore,
 } from '@reduxjs/toolkit';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 
-import { authSlice } from '@/store/auth';
-import { videoSlice } from '@/store/video';
+import { authSlice } from '@/src/store/auth';
+import { videoSlice } from '@/src/store/video';
 
-export * from '@/store/auth';
-export * from '@/store/video';
+export * from '@/src/store/auth';
+export * from '@/src/store/video';
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -18,6 +19,12 @@ export const rootReducer = combineReducers({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
+export const setupStore = (preloadedState?: Partial<RootState>) => {
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+};
 export type AppThunkDispatch = ThunkDispatch<RootState, undefined, Action>;
 export const useAppDispatch = (): AppThunkDispatch =>
   useDispatch<AppThunkDispatch>();

@@ -1,5 +1,5 @@
-import { AuthForm } from '@/components/forms';
-import { useAppDispatch, authActions } from '@/store';
+import { AuthForm } from '@/src/components/forms';
+import { useAppDispatch, authActions } from '@/src/store';
 
 export default function Login() {
   const dispatch = useAppDispatch();

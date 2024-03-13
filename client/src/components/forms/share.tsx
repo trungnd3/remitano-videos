@@ -1,15 +1,15 @@
 import { FormEventHandler, useState } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/src/components/ui/card';
+import { useToast } from '@/src/components/ui/use-toast';
 
 interface ShareFormProps {
   title: string;

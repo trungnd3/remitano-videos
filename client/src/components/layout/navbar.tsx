@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LucideImagePlus, ListVideo } from 'lucide-react';
+import { LucideImagePlus } from 'lucide-react';
 
 import {
   Tooltip,
@@ -15,12 +15,6 @@ const routes = [
     href: '/share',
     tooltip: 'Share a movie',
     color: 'text-red-700',
-  },
-  {
-    icon: ListVideo,
-    href: '/list',
-    tooltip: 'List view',
-    color: 'text-slate-400',
   },
 ];
 

@@ -1,29 +1,21 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Navbar from './navbar';
-import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/common';
+import Sidebar from './sidebar';
 
 export default function Header() {
-  const navigate = useNavigate();
-
   return (
-    <header className='sticky top-0 w-full z-10 bg-slate-100'>
-      <div className='container flex h-14 max-w-screen-2xl items-center'>
-        <div className='mr-4 hidden md:flex'>
+    <header className='sticky top-0 w-full z-10 bg-slate-200'>
+      <div className='container flex h-14 max-w-screen-2xl items-center justify-between'>
+        <div className='mr-4 flex'>
           <Link to='/' className='flex items-center justify-start'>
             <Logo />
           </Link>
-          <Navbar />
         </div>
-        <div className='flex flex-1 items-center justify-between space-x-2 md:justify-end'>
-          <p>Welcome trungnguyen@gmail.com</p>
-          <Button variant='default' onClick={() => navigate('/share')}>
-            Share a movie
-          </Button>
-          <Button variant='outline' className=''>
-            Logout
-          </Button>
+        <div className='flex flex-1 items-center justify-end space-x-2 gap-2'>
+          <Navbar />
+          <Sidebar />
         </div>
       </div>
     </header>

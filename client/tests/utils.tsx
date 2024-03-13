@@ -14,17 +14,19 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   store?: AppStore;
 }
 
+export const initialState = {
+  auth: {
+    user: '',
+  },
+  video: {
+    items: [],
+  },
+};
+
 export function renderWithProviders(
   ui: React.ReactElement,
   {
-    preloadedState = {
-      auth: {
-        user: '',
-      },
-      video: {
-        items: [],
-      },
-    },
+    preloadedState = initialState,
     // Automatically create a store instance if no store was passed in
     store = setupStore(preloadedState),
     ...renderOptions

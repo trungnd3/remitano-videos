@@ -23,9 +23,9 @@ export default function Sidebar() {
   };
 
   return (
-    <Sheet>
+    <Sheet data-testid='sidebar'>
       <SheetTrigger>
-        <Avatar>
+        <Avatar data-testid='avatar'>
           <AvatarImage src='https://github.com/shadcn.png' />
           <AvatarFallback>TN</AvatarFallback>
         </Avatar>

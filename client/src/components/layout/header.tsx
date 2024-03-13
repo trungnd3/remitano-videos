@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import Navbar from './navbar';
 import { Logo } from '@/src/components/common';
+import Navbar from './navbar';
 import Sidebar from './sidebar';
 import { useAppSelector } from '@/src/store/reducer';
 

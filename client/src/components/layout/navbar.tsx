@@ -20,7 +20,7 @@ const routes = [
 
 export default function Navbar() {
   return (
-    <nav className='flex items-center justify-between gap-2'>
+    <nav className='flex items-center justify-between gap-2' data-testid='nav'>
       {routes.map((route) => (
         <Link to={route.href} key={route.href} className='flex items-center'>
           <TooltipProvider>

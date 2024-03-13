@@ -1,19 +1,8 @@
 import { useParams } from 'react-router-dom';
 
-import { Error, Heading } from '@/components/common';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-
-const video = {
-  id: '1',
-  thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-  url: 'https://www.youtube.com/watch?v=tN6oJu2DqCM',
-  title: 'Back End Developer Roadmap 2024',
-  sharedBy: 'trungnguyen@gmail.com',
-  likes: 12,
-  dislike: 3,
-  description:
-    'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-};
+import { Error, Heading } from '@/components/common';
+import { useAppSelector } from '@/store';
 
 // TODO: integrate with video.js
 
@@ -23,7 +12,15 @@ export default function Play() {
   console.log(params);
 
   if (!params.id) {
-    return <Error status='404' message='Not found' />;
+    return <Error status='404' message='Page not found' />;
+  }
+
+  const video = useAppSelector((state) =>
+    state.video.items.find((item) => item.id === params.id)
+  );
+
+  if (!video) {
+    return <Error status='404' message='Video not found' />;
   }
 
   return (

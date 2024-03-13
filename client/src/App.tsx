@@ -1,5 +1,5 @@
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 import Layout from '@/components/layout';
 import { Error } from '@/components/common';
@@ -8,10 +8,18 @@ import Share from '@/pages/share';
 import Play from '@/pages/play';
 import Login from '@/pages/login';
 import Register from '@/pages/register';
-import { RootState } from '@/store/reducer';
+import { authActions, useAppDispatch, useAppSelector } from '@/store';
 
 function App() {
-  const user = useSelector<RootState>((state) => state.auth.user);
+  let user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!user) {
+      user = localStorage.getItem('user') || '';
+      dispatch(authActions.login({ user }));
+    }
+  }, []);
 
   return (
     <Layout>

@@ -8,8 +8,16 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { authActions, useAppDispatch } from '@/store';
 
 export default function Sidebar() {
+  const dispatch = useAppDispatch();
+
+  const logoutHandler = () => {
+    localStorage.removeItem('user');
+    dispatch(authActions.logout());
+  };
+
   return (
     <Sheet>
       <SheetTrigger>
@@ -26,8 +34,10 @@ export default function Sidebar() {
           </SheetTitle>
           <Separator className='my-4' />
           <div className='pt-4 flex items-center justify-end gap-2'>
-            <SheetTrigger>
-              <Button variant='outline'>Logout</Button>
+            <SheetTrigger asChild>
+              <Button variant='outline' onClick={logoutHandler}>
+                Logout
+              </Button>
             </SheetTrigger>
           </div>
         </SheetHeader>

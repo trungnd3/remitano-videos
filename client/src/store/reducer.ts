@@ -4,13 +4,17 @@ import {
   ThunkDispatch,
   combineReducers,
 } from '@reduxjs/toolkit';
-// import { Omit } from '@reduxjs/toolkit/dist/tsHelpers';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 
 import { authSlice } from '@/store/auth';
+import { videoSlice } from '@/store/video';
+
+export * from '@/store/auth';
+export * from '@/store/video';
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
+  video: videoSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

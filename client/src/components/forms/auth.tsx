@@ -1,4 +1,4 @@
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useToast } from '../ui/use-toast';
 
 interface AuthFormProps {
   title: string;
   description: string;
-  onSubmit: FormEventHandler<HTMLFormElement>;
+  onSubmit: (username: string, password: string) => void;
   btnText: string;
   link: {
     href: string;
@@ -30,6 +31,32 @@ export default function AuthForm({
   btnText,
   link,
 }: AuthFormProps) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { toast } = useToast();
+
+  const submitHandler: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    if (!username.trim()) {
+      toast({
+        title: 'Username must not be empty.',
+      });
+
+      return;
+    }
+
+    if (!password.trim()) {
+      toast({
+        title: 'Password must not be empty.',
+      });
+
+      return;
+    }
+
+    onSubmit(username, password);
+  };
+
   return (
     <Card className='min-h-[300px] flex flex-col'>
       <CardHeader className=' pt-6 px-4'>
@@ -38,12 +65,20 @@ export default function AuthForm({
       </CardHeader>
       <CardContent className='flex-1 px-4 flex flex-col justify-end'>
         <form
-          onSubmit={onSubmit}
+          onSubmit={submitHandler}
           className='flex flex-col justify-between gap-6'
         >
           <div className='flex flex-col md:flex-row justify-between gap-2 md:gap-4'>
-            <Input placeholder='Username' />
-            <Input placeholder='Password' />
+            <Input
+              placeholder='Username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <Input
+              placeholder='Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           <div className='flex justify-center md:justify-start'>
             <Button type='submit' variant='destructive'>

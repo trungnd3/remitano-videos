@@ -1,10 +1,8 @@
-import { FormEventHandler } from 'react';
-
 import { AuthForm } from '@/components/forms';
 
 export default function Register() {
-  const submitHandler: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+  const submitHandler = (username: string, password: string) => {
+    console.log(username, password);
   };
 
   return (

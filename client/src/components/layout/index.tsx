@@ -10,7 +10,7 @@ export default function Layout({
 }>) {
   return (
     <>
-      <div className='relative flex min-h-screen flex-col bg-background'>
+      <div className='relative flex min-h-screen flex-col bg-gradient-to-b from-red-500 via-slate-500 to-black'>
         <Header />
         <main className='flex-1 flex items-center'>
           <div className='container mt-4'>{children}</div>

@@ -1,10 +1,17 @@
-import { FormEventHandler } from 'react';
-
 import { AuthForm } from '@/components/forms';
+import { useAppDispatch, authActions } from '@/store';
 
 export default function Login() {
-  const submitHandler: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+  const dispatch = useAppDispatch();
+
+  const submitHandler = (username: string, password: string) => {
+    console.log(username, password);
+    localStorage.setItem('user', username);
+    dispatch(
+      authActions.login({
+        user: username,
+      })
+    );
   };
 
   return (

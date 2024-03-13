@@ -15,12 +15,14 @@ interface ShareFormProps {
   title: string;
   description: string;
   btnText: string;
+  onSubmit: (url: string) => void;
 }
 
 export default function ShareForm({
   title,
   description,
   btnText,
+  onSubmit,
 }: ShareFormProps) {
   const [url, setUrl] = useState('');
   const { toast } = useToast();
@@ -44,7 +46,7 @@ export default function ShareForm({
       return;
     }
 
-    console.log(url);
+    onSubmit(url);
   };
 
   return (

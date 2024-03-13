@@ -1,10 +1,14 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Navbar from './navbar';
 import { Logo } from '@/components/common';
 import Sidebar from './sidebar';
+import { RootState } from '@/store/reducer';
 
 export default function Header() {
+  const user = useSelector<RootState>((state) => state.auth.user);
+
   return (
     <header className='sticky top-0 w-full z-10 bg-slate-200'>
       <div className='container flex h-14 max-w-screen-2xl items-center justify-between'>
@@ -13,10 +17,12 @@ export default function Header() {
             <Logo />
           </Link>
         </div>
-        <div className='flex flex-1 items-center justify-end space-x-2 gap-2'>
-          <Navbar />
-          <Sidebar />
-        </div>
+        {!!user && (
+          <div className='flex flex-1 items-center justify-end space-x-2 gap-2'>
+            <Navbar />
+            <Sidebar />
+          </div>
+        )}
       </div>
     </header>
   );

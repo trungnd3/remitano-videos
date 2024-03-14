@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface IAuthState {
+export interface IAuthState {
   user: string;
 }
 

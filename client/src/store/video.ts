@@ -1,4 +1,4 @@
-const VIDEOS = [
+export const VIDEOS = [
   {
     id: '1',
     thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
@@ -63,7 +63,7 @@ export interface IVideo {
   description: string;
 }
 
-interface IVideoState {
+export interface IVideoState {
   items: IVideo[];
 }
 

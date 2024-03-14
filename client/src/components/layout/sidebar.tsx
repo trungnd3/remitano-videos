@@ -12,9 +12,10 @@ import {
   AvatarImage,
 } from '@/src/components/ui/avatar';
 import { Button } from '@/src/components/ui/button';
-import { authActions, useAppDispatch } from '@/src/store';
+import { authActions, useAppDispatch, useAppSelector } from '@/src/store';
 
 export default function Sidebar() {
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
   const logoutHandler = () => {
@@ -23,18 +24,18 @@ export default function Sidebar() {
   };
 
   return (
-    <Sheet data-testid='sidebar'>
+    <Sheet>
       <SheetTrigger>
         <Avatar data-testid='avatar'>
           <AvatarImage src='https://github.com/shadcn.png' />
           <AvatarFallback>TN</AvatarFallback>
         </Avatar>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent data-testid='sidebar'>
         <SheetHeader className='h-full'>
           <SheetTitle>
             <p>Welcome,</p>
-            <p>trungnguyen@gmail.com</p>
+            <p>{user}</p>
           </SheetTitle>
           <Separator className='my-4' />
           <div className='pt-4 flex items-center justify-end gap-2'>

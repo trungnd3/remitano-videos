@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { render, initialState, fireEvent, findByRole } from '@/tests/utils';
+import { render } from '@/tests/utils';
 import Header from '@/src/components/layout/header';
 
 describe('Header', () => {
@@ -8,35 +8,13 @@ describe('Header', () => {
     expect(await findByAltText('Logo')).toBeTruthy();
   });
 
-  it('shoud render navbar with user login', async () => {
-    const { findByTestId } = render(<Header />, {
-      preloadedState: {
-        ...initialState,
-        auth: {
-          user: 'trung',
-        },
-      },
-    });
-
-    expect(await findByTestId('nav')).toBeTruthy();
+  it('shoud not render navbar without user login', () => {
+    const { queryByTestId } = render(<Header />);
+    expect(queryByTestId('nav')).toBeFalsy();
   });
 
-  it('should render sidebar with user login after clicking avatar', async () => {
-    const { findByTestId } = render(<Header />, {
-      preloadedState: {
-        ...initialState,
-        auth: {
-          user: 'trung',
-        },
-      },
-    });
-
-    const avatar = await findByTestId('avatar');
-    expect(avatar).toBeTruthy();
-
-    fireEvent.click(avatar);
-    expect(
-      await findByRole(document.getElementsByTagName('body')[0], 'dialog')
-    ).toBeTruthy();
+  it('should not render user avatar without logging-in', async () => {
+    const { queryByTestId } = render(<Header />);
+    expect(queryByTestId('avatar')).toBeFalsy();
   });
 });

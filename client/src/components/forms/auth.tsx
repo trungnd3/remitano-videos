@@ -65,6 +65,7 @@ export default function AuthForm({
       </CardHeader>
       <CardContent className='flex-1 px-4 flex flex-col justify-end'>
         <form
+          role='form'
           onSubmit={submitHandler}
           className='flex flex-col justify-between gap-6'
         >

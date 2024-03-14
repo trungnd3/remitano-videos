@@ -57,6 +57,7 @@ export default function ShareForm({
       </CardHeader>
       <CardContent className='flex-1 px-4 flex flex-col justify-center'>
         <form
+          role='form'
           onSubmit={submitHandler}
           className='flex flex-col md:flex-row justify-center gap-2 md:gap-4'
         >

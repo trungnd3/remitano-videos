@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { RenderResult, render } from '@/tests/utils';
 import {
   Avatar,
@@ -8,29 +8,10 @@ import {
 
 const FALLBACK_TEXT = 'TN';
 const IMAGE_ALT_TEXT = 'Fake Avatar';
-const DELAY = 300;
 
 describe('Avatar', () => {
   let rendered: RenderResult;
   let image: HTMLElement | null = null;
-  const orignalGlobalImage = window.Image;
-
-  beforeAll(() => {
-    (window.Image as any) = class MockImage {
-      onload: () => void = () => {};
-      src: string = '';
-      constructor() {
-        setTimeout(() => {
-          this.onload();
-        }, DELAY);
-        return this;
-      }
-    };
-  });
-
-  afterAll(() => {
-    window.Image = orignalGlobalImage;
-  });
 
   beforeEach(() => {
     rendered = render(

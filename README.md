@@ -16,11 +16,11 @@ The project uses the following tech stacks:
 
 ### Front-end
 
-- Typescript (lang) [https://www.typescriptlang.org/]
-- React (lib) [https://react.dev/]
-- Vite (lib) [https://vitejs.dev/]
-- TailwindCSS (lib) [https://tailwindcss.com/]
-- Shadcn UI (lib) [https://ui.shadcn.com/]
+- [Typescript](https://www.typescriptlang.org/): a superset of Javascript, the language being used.
+- [React](https://react.dev/): the SPA library.
+- [Vite](https://vitejs.dev/): build tool for our project, contains dev server and build process. A substitute for create-react-app tool.
+- [TailwindCSS](https://tailwindcss.com/): a utility-first CSS framework packed with classes like `flex`, `pt-4`, `text-center` and `rotate-90`, etc.
+- [Shadcn UI](https://ui.shadcn.com/): a collection of re-usable components that can be copied and pasted in the project.
 
 ### Back-end
 
@@ -34,7 +34,7 @@ After you get Docker Engine / Desktop up and running:
 
 1. Go to any favour directory in your machine for the project location.
 
-2. Clone the project from the github repo [https://github.com/trungnd3/remitano-videos] using command:
+2. Clone the project from the github repo using command:
 
 ```
 git clone https://github.com/trungnd3/remitano-videos.git

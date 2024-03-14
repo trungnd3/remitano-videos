@@ -40,7 +40,11 @@ export default function Sidebar() {
           <Separator className='my-4' />
           <div className='pt-4 flex items-center justify-end gap-2'>
             <SheetTrigger asChild>
-              <Button variant='outline' onClick={logoutHandler}>
+              <Button
+                variant='outline'
+                onClick={logoutHandler}
+                data-testid='logout'
+              >
                 Logout
               </Button>
             </SheetTrigger>

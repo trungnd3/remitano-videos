@@ -29,4 +29,27 @@ describe('Sidebar', () => {
       'Welcome,trung@gmail.com'
     );
   });
+
+  it('should render logout button inside', async () => {
+    const { findByTestId } = render(<Sidebar />, { preloadedState });
+
+    const avatar = await findByTestId('avatar');
+    fireEvent.click(avatar);
+
+    const logoutBtn = await findByTestId('logout');
+    expect(logoutBtn.textContent).toBe('Logout');
+  });
+
+  it.skip('should log user out when logout button clicked', async () => {
+    const { findByTestId } = render(<Sidebar />, { preloadedState });
+
+    const avatar = await findByTestId('avatar');
+    fireEvent.click(avatar);
+
+    const logoutBtn = await findByTestId('logout');
+    expect(logoutBtn.textContent).toBe('Logout');
+
+    fireEvent.click(logoutBtn);
+    expect(await findByTestId('avatar')).toBeFalsy();
+  });
 });

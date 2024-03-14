@@ -1,55 +1,48 @@
-import { describe, expect, it } from 'vitest';
-import { render, initialState, fireEvent } from '@/tests/utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { render, initialState, fireEvent, RenderResult } from '@/tests/utils';
 import Sidebar from '@/src/components/layout/sidebar';
 
 describe('Sidebar', () => {
+  let rendered: RenderResult;
+  let avatar: HTMLElement;
+
   const preloadedState = {
     ...initialState,
     auth: { user: 'trung@gmail.com' },
   };
 
+  beforeEach(async () => {
+    rendered = render(<Sidebar />, { preloadedState });
+    avatar = await rendered.findByTestId('avatar');
+  });
+
   it('should render after user login and clicking on avatar', async () => {
-    const { findByTestId } = render(<Sidebar />, { preloadedState });
-
-    const avatar = await findByTestId('avatar');
     expect(avatar).toBeTruthy();
-
     fireEvent.click(avatar);
-    expect(await findByTestId('sidebar')).toBeTruthy();
+    expect(await rendered.findByTestId('sidebar')).toBeTruthy();
   });
 
   it('should render with welcome username text', async () => {
-    const { findByTestId } = render(<Sidebar />, { preloadedState });
-
-    const avatar = await findByTestId('avatar');
-
     fireEvent.click(avatar);
-    const sidebar = await findByTestId('sidebar');
+    const sidebar = await rendered.findByTestId('sidebar');
     expect(sidebar.getElementsByTagName('h2')[0].textContent).toBe(
       'Welcome,trung@gmail.com'
     );
   });
 
   it('should render logout button inside', async () => {
-    const { findByTestId } = render(<Sidebar />, { preloadedState });
-
-    const avatar = await findByTestId('avatar');
     fireEvent.click(avatar);
-
-    const logoutBtn = await findByTestId('logout');
+    const logoutBtn = await rendered.findByTestId('logout');
     expect(logoutBtn.textContent).toBe('Logout');
   });
 
   it.skip('should log user out when logout button clicked', async () => {
-    const { findByTestId } = render(<Sidebar />, { preloadedState });
-
-    const avatar = await findByTestId('avatar');
     fireEvent.click(avatar);
 
-    const logoutBtn = await findByTestId('logout');
+    const logoutBtn = await rendered.findByTestId('logout');
     expect(logoutBtn.textContent).toBe('Logout');
 
     fireEvent.click(logoutBtn);
-    expect(await findByTestId('avatar')).toBeFalsy();
+    expect(await rendered.findByTestId('avatar')).toBeFalsy();
   });
 });

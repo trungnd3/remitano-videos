@@ -1,8 +1,8 @@
-import { Heading } from '@/src/components/common';
 import { render } from '@/tests/utils';
 import { describe, expect, it } from 'vitest';
+import { Heading } from '@/src/components/common';
 
-describe(() => {
+describe('Heading', () => {
   const props = {
     title: 'Testing title',
     description: 'Testing description',

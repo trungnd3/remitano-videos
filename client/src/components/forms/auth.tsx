@@ -67,29 +67,32 @@ export default function AuthForm({
         <form
           role='form'
           onSubmit={submitHandler}
-          className='flex flex-col justify-between gap-6'
+          className='flex flex-col justify-between gap-6 pt-6'
         >
-          <div className='flex flex-col md:flex-row justify-between gap-2 md:gap-4'>
+          <div className='flex flex-col justify-between gap-2 md:gap-4'>
             <Input
               placeholder='Username'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
             <Input
+              type='password'
               placeholder='Password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className='flex justify-center md:justify-start'>
-            <Button type='submit' variant='destructive'>
+          <div className='flex justify-center'>
+            <Button type='submit' variant='destructive' size='xl'>
               {btnText}
             </Button>
           </div>
         </form>
       </CardContent>
-      <CardFooter className='flex-1 flex justify-center md:justify-start md:px-4'>
-        <Link to={link.href}>{link.text}</Link>
+      <CardFooter className='flex-1 flex justify-center md:px-4'>
+        <Link to={link.href} className='hover:text-blue-500'>
+          {link.text}
+        </Link>
       </CardFooter>
     </Card>
   );

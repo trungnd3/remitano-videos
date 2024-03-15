@@ -7,5 +7,6 @@ type UserRepo interface {
 	Update(user model.User)
 	Delete(userId int)
 	FindById(userId int) (user model.User, err error)
+	FindByUsername(username string) (user model.User, err error)
 	FindAll() []model.User
 }

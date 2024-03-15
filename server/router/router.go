@@ -20,8 +20,10 @@ func NewRouter(userController *controller.UserController) *gin.Engine {
 	})
 
 	userRouter := router.Group("/users")
+	userRouter.GET("", userController.FindAll)
 	userRouter.GET("/:userId", userController.FindById)
 	userRouter.POST("", userController.Create)
+	userRouter.POST("/signin", userController.SignIn)
 	userRouter.DELETE("/:userId", userController.Delete)
 
 	return router

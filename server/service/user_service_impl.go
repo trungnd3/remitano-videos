@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/data/response"
@@ -22,14 +24,38 @@ func NewUserServiceImpl(userRepo repository.UserRepo, validate *validator.Valida
 }
 
 // Create implements UserService.
-func (us *UserServiceImpl) Create(user request.CreateUserRequest) {
+func (us *UserServiceImpl) Create(user request.CreateUserRequest) error {
 	err := us.Validate.Struct(user)
 	helper.ErrorPanic(err)
+
+	userData, err := us.UserRepo.FindByUsername(user.Username)
+	helper.ErrorPanic(err)
+	if (userData != model.User{}) {
+		return errors.New("User already exists.")
+	}
+
 	userModel := model.User{
 		Username: user.Username,
 		Password: user.Password,
 	}
 	us.UserRepo.Save(userModel)
+	return nil
+}
+
+func (us *UserServiceImpl) SignIn(user request.CreateUserRequest) (string, error) {
+	userData, err := us.UserRepo.FindByUsername(user.Username)
+	helper.ErrorPanic(err)
+
+	if (userData == model.User{}) {
+		return "", errors.New("User does not exist.")
+	}
+
+	// TODO: check with bcrypt algorithm
+	if (userData.Password != user.Password) {
+		return "", errors.New("Invalid credentials.")
+	}
+
+	return userData.Username, nil
 }
 
 // Delete implements UserService.

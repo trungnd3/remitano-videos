@@ -44,6 +44,8 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+    environment:
+      - WDS_SOCKET_PORT=0
   tests:
     build:
       context: ./client

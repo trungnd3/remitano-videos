@@ -52,6 +52,19 @@ func (u *UserRepoImpl) FindById(userId int) (user model.User, err error) {
 	}
 }
 
+// FindByUsername implements UserRepo.
+func (u *UserRepoImpl) FindByUsername(username string) (user model.User, err error) {
+	var usr model.User
+	result := u.Db.Find(&usr, model.User{
+		Username: username,
+	})
+	if result != nil {
+		return usr, nil
+	} else {
+		return usr, errors.New("User not found")
+	}
+}
+
 // Delete implements UserRepo.
 func (u *UserRepoImpl) Delete(userId int) {
 	var usr model.User

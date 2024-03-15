@@ -29,14 +29,38 @@ func (uc *UserController) Create(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&createUserRequest)
 	helper.ErrorPanic(err)
 
-	uc.UserService.Create(createUserRequest)
+	err = uc.UserService.Create(createUserRequest)
+
 	apiResponse := response.ApiResponse{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: nil,
 	}
+	if err != nil {
+		apiResponse.Code = http.StatusConflict
+		apiResponse.Status = err.Error()
+	}
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, apiResponse)
+	ctx.JSON(apiResponse.Code, apiResponse)
+}
+
+func (uc *UserController) SignIn(ctx *gin.Context) {
+	signInRequest := request.CreateUserRequest{}
+	err := ctx.ShouldBindJSON(&signInRequest)
+	helper.ErrorPanic(err)
+
+	username, err := uc.UserService.SignIn(signInRequest)
+	apiResponse := response.ApiResponse{
+		Code: http.StatusOK,
+		Status: "OK",
+		Data: username,
+	}
+	if err != nil {
+		apiResponse.Code = http.StatusForbidden
+		apiResponse.Status = "403"
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(apiResponse.Code, apiResponse)
 }
 
 // Delete Controller
@@ -45,15 +69,22 @@ func (uc *UserController) Delete(ctx *gin.Context) {
 	userId := ctx.Param("userId")
 	id, err := strconv.Atoi(userId)
 	helper.ErrorPanic(err)
-	uc.UserService.Delete(id)
 
 	apiResponse := response.ApiResponse{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: nil,
 	}
+	userResponse := uc.UserService.FindById(id)
+	log.Info().Msg(userResponse.Username)
+	if (userResponse == response.UserResponse{}) {
+		apiResponse.Code = http.StatusNotFound
+		apiResponse.Status = "User not found"
+	}
+
+	uc.UserService.Delete(id)
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, apiResponse)
+	ctx.JSON(apiResponse.Code, apiResponse)
 }
 
 // FindById Controller
@@ -71,5 +102,19 @@ func (uc *UserController) FindById(ctx *gin.Context) {
 		Data: userResponse,
 	}
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, apiResponse)
+	ctx.JSON(apiResponse.Code, apiResponse)
+}
+
+// FindAll Controller
+func (uc *UserController) FindAll(ctx *gin.Context) {
+	log.Info().Msg("finding user...")
+	usersResponse := uc.UserService.FindAll()
+	
+	apiResponse := response.ApiResponse{
+		Code: http.StatusOK,
+		Status: "OK",
+		Data: usersResponse,
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(apiResponse.Code, apiResponse)
 }

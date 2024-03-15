@@ -12,17 +12,25 @@ An entertainment-space where you could share you favourite or interesting YouTub
 
 ## Prerequisites
 
-The project uses the following tech stacks:
+The following tech stacks are being used for the project. You don't need to install any of these locally because this project is using Docker to initialize containers inside which were installed corresponding packages/libraries. This list is only for the project knowledge.
 
 ### Front-end
 
-- [Typescript](https://www.typescriptlang.org/): a superset of Javascript, the language being used.
+- [Typescript](https://www.typescriptlang.org/): a superset of Javascript, the language being used for FE.
 - [React](https://react.dev/): the SPA library.
 - [Vite](https://vitejs.dev/): build tool for our project, contains dev server and build process. A substitute for create-react-app tool.
 - [TailwindCSS](https://tailwindcss.com/): a utility-first CSS framework packed with classes like `flex`, `pt-4`, `text-center` and `rotate-90`, etc.
 - [Shadcn UI](https://ui.shadcn.com/): a collection of re-usable components that can be copied and pasted in the project.
 
 ### Back-end
+
+- [Golang](): the language being used for BE.
+- [Gin]():
+- [Gorm]()
+
+### Database
+
+- Postgres
 
 ## Running the App
 

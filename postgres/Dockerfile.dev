@@ -1,0 +1,7 @@
+FROM postgres:latest
+
+LABEL author="Trung Nguyen"
+LABEL description="Postgres Image for Remitano Videos"
+LABEL version="1.0"
+
+COPY *.sh /docker-entrypoint-initdb.d/

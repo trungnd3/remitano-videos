@@ -32,15 +32,18 @@ func main() {
 
 	// Repository
 	userRepository := repository.NewUserRepoImpl(db)
+	videoRepository := repository.NewVideoRepoImpl(db)
 
 	// Service
 	userService := service.NewUserServiceImpl(userRepository, validate)
+	videoService := service.NewVideoServiceImpl(videoRepository, validate)
 
 	// Controller
 	userController := controller.NewUserController(userService)
+	videoController := controller.NewVideoController(videoService)
 
 	// Router
-	routes := router.NewRouter(userController)
+	routes := router.NewRouter(userController, videoController)
 
 	server := &http.Server{
 		Addr: ":8080",

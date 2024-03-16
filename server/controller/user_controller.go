@@ -25,13 +25,13 @@ func NewUserController(service service.UserService) *UserController {
 // Create Controller
 func (uc *UserController) Create(ctx *gin.Context) {
 	log.Info().Msg("user creating...")
-	createUserRequest := request.CreateUserRequest{}
+	createUserRequest := request.CreateUser{}
 	err := ctx.ShouldBindJSON(&createUserRequest)
 	helper.ErrorPanic(err)
 
 	err = uc.UserService.Create(createUserRequest)
 
-	apiResponse := response.ApiResponse{
+	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: nil,
@@ -45,12 +45,12 @@ func (uc *UserController) Create(ctx *gin.Context) {
 }
 
 func (uc *UserController) SignIn(ctx *gin.Context) {
-	signInRequest := request.CreateUserRequest{}
+	signInRequest := request.CreateUser{}
 	err := ctx.ShouldBindJSON(&signInRequest)
 	helper.ErrorPanic(err)
 
 	username, err := uc.UserService.SignIn(signInRequest)
-	apiResponse := response.ApiResponse{
+	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: username,
@@ -70,14 +70,14 @@ func (uc *UserController) Delete(ctx *gin.Context) {
 	id, err := strconv.Atoi(userId)
 	helper.ErrorPanic(err)
 
-	apiResponse := response.ApiResponse{
+	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: nil,
 	}
 	userResponse := uc.UserService.FindById(id)
 	log.Info().Msg(userResponse.Username)
-	if (userResponse == response.UserResponse{}) {
+	if (userResponse == response.User{}) {
 		apiResponse.Code = http.StatusNotFound
 		apiResponse.Status = "User not found"
 	}
@@ -96,7 +96,7 @@ func (uc *UserController) FindById(ctx *gin.Context) {
 
 	userResponse := uc.UserService.FindById(id)
 
-	apiResponse := response.ApiResponse{
+	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: userResponse,
@@ -110,7 +110,7 @@ func (uc *UserController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("finding user...")
 	usersResponse := uc.UserService.FindAll()
 	
-	apiResponse := response.ApiResponse{
+	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: usersResponse,

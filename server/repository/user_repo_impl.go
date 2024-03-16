@@ -26,7 +26,7 @@ func (u *UserRepoImpl) Save(user model.User) {
 func (u *UserRepoImpl) Update(user model.User) {
 	panic("unimplemented")
 
-	// var updateUser = request.UpdateUserRequest{
+	// var updateUser = request.UpdateUser{
 	// 	Id: user.Id,
 	// }
 	// result := u.Db.Model(&user).Updates(updateUser)
@@ -35,39 +35,39 @@ func (u *UserRepoImpl) Update(user model.User) {
 
 // FindAll implements UserRepo.
 func (u *UserRepoImpl) FindAll() []model.User {
-	var usrs []model.User
-	result := u.Db.Find(&usrs)
+	var users []model.User
+	result := u.Db.Find(&users)
 	helper.ErrorPanic(result.Error)
-	return usrs
+	return users
 }
 
 // FindById implements UserRepo.
-func (u *UserRepoImpl) FindById(userId int) (user model.User, err error) {
-	var usr model.User
-	result := u.Db.Find(&usr, userId)
+func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
+	var user model.User
+	result := u.Db.Find(&user, userId)
 	if result != nil {
-		return usr, nil
+		return user, nil
 	} else {
-		return usr, errors.New("User not found")
+		return user, errors.New("User not found")
 	}
 }
 
 // FindByUsername implements UserRepo.
-func (u *UserRepoImpl) FindByUsername(username string) (user model.User, err error) {
-	var usr model.User
-	result := u.Db.Find(&usr, model.User{
+func (u *UserRepoImpl) FindByUsername(username string) (model.User, error) {
+	var user model.User
+	result := u.Db.Find(&user, model.User{
 		Username: username,
 	})
 	if result != nil {
-		return usr, nil
+		return user, nil
 	} else {
-		return usr, errors.New("User not found")
+		return user, errors.New("User not found")
 	}
 }
 
 // Delete implements UserRepo.
 func (u *UserRepoImpl) Delete(userId int) {
-	var usr model.User
-	result := u.Db.Where("id = ?", userId).Delete(&usr)
+	var user model.User
+	result := u.Db.Where("id = ?", userId).Delete(&user)
 	helper.ErrorPanic(result.Error)
 }

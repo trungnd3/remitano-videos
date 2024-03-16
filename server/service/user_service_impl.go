@@ -24,7 +24,7 @@ func NewUserServiceImpl(userRepo repository.UserRepo, validate *validator.Valida
 }
 
 // Create implements UserService.
-func (us *UserServiceImpl) Create(user request.CreateUserRequest) error {
+func (us *UserServiceImpl) Create(user request.CreateUser) error {
 	err := us.Validate.Struct(user)
 	helper.ErrorPanic(err)
 
@@ -42,7 +42,7 @@ func (us *UserServiceImpl) Create(user request.CreateUserRequest) error {
 	return nil
 }
 
-func (us *UserServiceImpl) SignIn(user request.CreateUserRequest) (string, error) {
+func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 	helper.ErrorPanic(err)
 
@@ -64,12 +64,12 @@ func (us *UserServiceImpl) Delete(userId int) {
 }
 
 // FindAll implements UserService.
-func (us *UserServiceImpl) FindAll() []response.UserResponse {
+func (us *UserServiceImpl) FindAll() []response.User {
 	result := us.UserRepo.FindAll()
 
-	var users []response.UserResponse
+	var users []response.User
 	for _, value := range result {
-		user := response.UserResponse{
+		user := response.User{
 			Id: value.Id,
 			Username: value.Username,
 		}
@@ -80,10 +80,10 @@ func (us *UserServiceImpl) FindAll() []response.UserResponse {
 }
 
 // FindById implements UserService.
-func (us *UserServiceImpl) FindById(userId int) response.UserResponse {
+func (us *UserServiceImpl) FindById(userId int) response.User {
 	userData, err := us.UserRepo.FindById(userId)
 	helper.ErrorPanic(err)
-	user := response.UserResponse{
+	user := response.User{
 		Id: userData.Id,
 		Username: userData.Username,
 	}
@@ -91,7 +91,7 @@ func (us *UserServiceImpl) FindById(userId int) response.UserResponse {
 }
 
 // Update implements UserService.
-func (us *UserServiceImpl) Update(user request.UpdateUserRequest) {
+func (us *UserServiceImpl) Update(user request.UpdateUser) {
 	userData, err := us.UserRepo.FindById(user.Id)
 	helper.ErrorPanic(err)
 	us.UserRepo.Update(userData)

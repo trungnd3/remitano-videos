@@ -9,7 +9,10 @@ import (
 	"github.com/trungnd3/remitano-videos/controller"
 )
 
-func NewRouter(userController *controller.UserController) *gin.Engine {
+func NewRouter(
+	userController *controller.UserController,
+	videoController *controller.VideoController,
+) *gin.Engine {
 	router := gin.Default()
 
 	// add swagger
@@ -25,6 +28,13 @@ func NewRouter(userController *controller.UserController) *gin.Engine {
 	userRouter.POST("", userController.Create)
 	userRouter.POST("/signin", userController.SignIn)
 	userRouter.DELETE("/:userId", userController.Delete)
+
+	videosGroup := router.Group("/videos")
+	// videosGroup.GET("", videoController.FindAll)
+	// videosGroup.GET("/:userId", videoController.FindById)
+	videosGroup.POST("", videoController.Share)
+	// videosGroup.POST("/signin", videoController.SignIn)
+	// videosGroup.DELETE("/:userId", videoController.Delete)
 
 	return router
 }

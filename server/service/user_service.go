@@ -6,10 +6,10 @@ import (
 )
 
 type UserService interface {
-	Create(user request.CreateUserRequest) error
-	SignIn(user request.CreateUserRequest) (string, error)
-	Update(user request.UpdateUserRequest)
+	Create(user request.CreateUser) error
+	SignIn(user request.CreateUser) (string, error)
+	Update(user request.UpdateUser)
 	Delete(userId int)
-	FindById(userId int) response.UserResponse
-	FindAll() []response.UserResponse
+	FindById(userId int) response.User
+	FindAll() []response.User
 }

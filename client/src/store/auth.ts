@@ -33,10 +33,14 @@ export function signInUser(username: string, password: string) {
         );
       } else {
         toast({
-          title: 'Cannot sign in',
+          title: 'Unable to sign in',
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      toast({
+        title: 'Unexpected error',
+      });
+    }
   };
 }
 
@@ -53,15 +57,22 @@ export function createUser(username: string, password: string) {
       });
 
       const data = await response.json();
-      console.log('dispatcher - create user', data);
       if (data.code === 200) {
         dispatch(
           authActions.login({
             user: username,
           })
         );
+      } else {
+        toast({
+          title: 'Unable to create user',
+        });
       }
-    } catch (error) {}
+    } catch (error) {
+      toast({
+        title: 'Unexpected error',
+      });
+    }
   };
 }
 

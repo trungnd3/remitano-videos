@@ -3,7 +3,7 @@ package service
 import "github.com/trungnd3/remitano-videos/data/response"
 
 type VideoService interface {
-	Share(videoUrl string) error
+	Share(videoUrl string, username string) error
 	FindAll() []response.Video
 	FindById(videoId int) response.Video
 	Like() int

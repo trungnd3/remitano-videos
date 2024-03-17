@@ -29,6 +29,7 @@ func main() {
 	validate := validator.New()
 
 	db.Table("users").AutoMigrate(&model.User{})
+	db.Table("videos").AutoMigrate(&model.Video{})
 
 	// Repository
 	userRepository := repository.NewUserRepoImpl(db)
@@ -36,7 +37,7 @@ func main() {
 
 	// Service
 	userService := service.NewUserServiceImpl(userRepository, validate)
-	videoService := service.NewVideoServiceImpl(videoRepository, validate)
+	videoService := service.NewVideoServiceImpl(userRepository, videoRepository, validate)
 
 	// Controller
 	userController := controller.NewUserController(userService)

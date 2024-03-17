@@ -11,5 +11,5 @@ type Video struct {
 	SourceURL			string	`gorm:"type:varchar(255)"`
 	Likes					int			`gorm:"type:int"`
 	Dislikes			int			`gorm:"type:int"`
-	SharedBy			User
+	UserId				int			`gorm:"type:int"`
 }

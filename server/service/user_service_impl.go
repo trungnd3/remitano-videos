@@ -32,7 +32,7 @@ func (us *UserServiceImpl) Create(user request.CreateUser) error {
 
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 	helper.ErrorPanic(err)
-	if (userData != model.User{}) {
+	if (userData != nil) {
 		return errors.New("User already exists.")
 	}
 
@@ -55,7 +55,7 @@ func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 	helper.ErrorPanic(err)
 
-	if (userData == model.User{}) {
+	if (userData == nil) {
 		return "", errors.New("User does not exist.")
 	}
 
@@ -67,8 +67,6 @@ func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
 	updateUser := &model.User{
 		Id: userData.Id,
-		Username: userData.Username,
-		Password: userData.Password,
 		Token: token,
 		RefreshToken: refreshToken,
 	}

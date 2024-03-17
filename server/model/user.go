@@ -1,8 +1,6 @@
 package model
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -13,6 +11,5 @@ type User struct {
 	Password			string		`gorm:"type:varchar(255)"`
 	Token					string		`gorm:"type:text"`
 	RefreshToken	string		`gorm:"type:text"`
-	CreatedAt			time.Time	`gorm:"autoCreateTime:true"`
-	UpdatedAt			time.Time	`json:"autoUpdateTime:true"`
+	Videos				[]Video
 }

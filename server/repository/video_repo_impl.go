@@ -44,7 +44,8 @@ func (v *VideoRepoImpl) FindById(videoId int) (model.Video, error) {
 
 // Save implements VideoRepo.
 func (v *VideoRepoImpl) Save(video model.Video) {
-	result := v.Db.Create(&video)
+	// v.Db.Model(&video).Association("User").Append(&model.User{Username: video.User.Username})
+	result := v.Db.Create(&video).Save(&video)
 	helper.ErrorPanic(result.Error)
 }
 

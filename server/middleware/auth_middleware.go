@@ -3,14 +3,17 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/trungnd3/remitano-videos/helper"
 )
 
 func Authenticate(ctx *gin.Context) {
-	clientToken := ctx.Request.Header.Get("token")
-	if clientToken == "" {
+	authorization := ctx.Request.Header.Get("Authorization")
+	tokens := strings.Split(authorization, " ")
+	clientToken := tokens[1]
+	if clientToken == "" || tokens[0] != "Bearer" {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("No Authorization Header Provided")})
 			ctx.Abort()
 			return

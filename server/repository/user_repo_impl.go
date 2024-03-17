@@ -34,6 +34,14 @@ func (u *UserRepoImpl) Update(user model.User) {
 	helper.ErrorPanic(result.Error)
 }
 
+// Associate implements UserRepo.
+func (u *UserRepoImpl) Associate(user model.User, video model.Video) {
+	err := u.Db.Model(&user).Association("Videos").Append(&video)
+	helper.ErrorPanic(err)
+	u.Db.Save(&user)
+	// helper.ErrorPanic(result.Error)
+}
+
 // FindAll implements UserRepo.
 func (u *UserRepoImpl) FindAll() []model.User {
 	var users []model.User
@@ -54,8 +62,8 @@ func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
 }
 
 // FindByUsername implements UserRepo.
-func (u *UserRepoImpl) FindByUsername(username string) (model.User, error) {
-	var user model.User
+func (u *UserRepoImpl) FindByUsername(username string) (*model.User, error) {
+	user := &model.User{}
 	result := u.Db.Find(&user, model.User{
 		Username: username,
 	})

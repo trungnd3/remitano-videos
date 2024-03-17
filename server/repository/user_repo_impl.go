@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 
+	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/helper"
 	"github.com/trungnd3/remitano-videos/model"
 	"gorm.io/gorm"
@@ -24,13 +25,13 @@ func (u *UserRepoImpl) Save(user model.User) {
 
 // Update implements UserRepo.
 func (u *UserRepoImpl) Update(user model.User) {
-	panic("unimplemented")
-
-	// var updateUser = request.UpdateUser{
-	// 	Id: user.Id,
-	// }
-	// result := u.Db.Model(&user).Updates(updateUser)
-	// helper.ErrorPanic(result.Error)
+	var updateUser = request.UpdateUser{
+		Id: user.Id,
+		Token: user.Token,
+		RefreshToken: user.RefreshToken,
+	}
+	result := u.Db.Model(&user).Updates(updateUser)
+	helper.ErrorPanic(result.Error)
 }
 
 // FindAll implements UserRepo.

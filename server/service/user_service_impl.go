@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/trungnd3/remitano-videos/data/request"
@@ -9,6 +10,7 @@ import (
 	"github.com/trungnd3/remitano-videos/helper"
 	"github.com/trungnd3/remitano-videos/model"
 	"github.com/trungnd3/remitano-videos/repository"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserServiceImpl struct {
@@ -34,9 +36,16 @@ func (us *UserServiceImpl) Create(user request.CreateUser) error {
 		return errors.New("User already exists.")
 	}
 
+	password := us.HashPassword(user.Password)
+	user.Password = password
+
+	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
+
 	userModel := model.User{
 		Username: user.Username,
 		Password: user.Password,
+		Token: 		token,
+		RefreshToken: refreshToken,
 	}
 	us.UserRepo.Save(userModel)
 	return nil
@@ -50,12 +59,22 @@ func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 		return "", errors.New("User does not exist.")
 	}
 
-	// TODO: check with bcrypt algorithm
-	if (userData.Password != user.Password) {
-		return "", errors.New("Invalid credentials.")
+	passwordIsValid, msg := us.VerifyPassword(user.Password, userData.Password)
+	if passwordIsValid != true {
+		return "", errors.New(msg)
 	}
 
-	return userData.Username, nil
+	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
+	updateUser := &model.User{
+		Id: userData.Id,
+		Username: userData.Username,
+		Password: userData.Password,
+		Token: token,
+		RefreshToken: refreshToken,
+	}
+	us.UserRepo.Update(*updateUser)
+
+	return token, nil
 }
 
 // Delete implements UserService.
@@ -95,4 +114,23 @@ func (us *UserServiceImpl) Update(user request.UpdateUser) {
 	userData, err := us.UserRepo.FindById(user.Id)
 	helper.ErrorPanic(err)
 	us.UserRepo.Update(userData)
+}
+
+func (us *UserServiceImpl) HashPassword(password string) string {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	helper.ErrorPanic(err)
+	return string(bytes)
+}
+
+func (us *UserServiceImpl) VerifyPassword(userPassword string, providedPassword string) (bool, string) {
+	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(userPassword))
+	check := true
+	msg := ""
+
+	if err != nil {
+		msg = fmt.Sprintf("Username or Password incorrect")
+		check  = false
+	}
+	
+	return check, msg
 }

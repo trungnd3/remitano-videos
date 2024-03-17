@@ -4,11 +4,17 @@ import { AppThunkDispatch } from '.';
 import { toast } from '@/src/components/ui/use-toast';
 
 export interface IAuthState {
-  user: string;
+  user: {
+    username: string;
+    token: string;
+  };
 }
 
 const initialState: IAuthState = {
-  user: '',
+  user: {
+    username: '',
+    token: '',
+  },
 };
 
 export function signInUser(username: string, password: string) {
@@ -25,12 +31,12 @@ export function signInUser(username: string, password: string) {
       const data = await response.json();
 
       if (data.code === 200) {
-        localStorage.setItem('user', data.data);
-        dispatch(
-          authActions.login({
-            user: data.data,
-          })
-        );
+        const user = {
+          username: username,
+          token: data.data,
+        };
+        localStorage.setItem('user', JSON.stringify(user));
+        dispatch(authActions.login({ user }));
       } else {
         toast({
           title: 'Unable to sign in',
@@ -57,12 +63,14 @@ export function createUser(username: string, password: string) {
       });
 
       const data = await response.json();
+
       if (data.code === 200) {
-        dispatch(
-          authActions.login({
-            user: username,
-          })
-        );
+        const user = {
+          username: username,
+          token: data.data,
+        };
+        localStorage.setItem('user', JSON.stringify(user));
+        dispatch(authActions.login({ user }));
       } else {
         toast({
           title: 'Unable to create user',
@@ -81,10 +89,10 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     login(state, action: PayloadAction<IAuthState>) {
-      state.user = action.payload.user;
+      state.user = { ...action.payload.user };
     },
     logout(state) {
-      state.user = '';
+      state.user = { ...initialState.user };
     },
   },
 });

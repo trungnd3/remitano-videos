@@ -8,7 +8,12 @@ import Share from '@/src/pages/share';
 import Play from '@/src/pages/play';
 import Login from '@/src/pages/login';
 import Register from '@/src/pages/register';
-import { authActions, useAppDispatch, useAppSelector } from '@/src/store';
+import {
+  IAuthState,
+  authActions,
+  useAppDispatch,
+  useAppSelector,
+} from '@/src/store';
 
 function App() {
   let user = useAppSelector((state) => state.auth.user);
@@ -16,15 +21,18 @@ function App() {
 
   useEffect(() => {
     if (!user) {
-      user = localStorage.getItem('user') || '';
-      dispatch(authActions.login({ user }));
+      const userStr = localStorage.getItem('user');
+      if (!!userStr) {
+        const userObj: IAuthState['user'] = JSON.parse(userStr);
+        dispatch(authActions.login({ user: { ...userObj } }));
+      }
     }
   }, []);
 
   return (
     <Layout>
       <Routes>
-        {!!user && (
+        {!!user && !!user.token && (
           <>
             <Route path='/' element={<Home />} />
             <Route path='/play' element={<Play />}>
@@ -33,7 +41,7 @@ function App() {
             <Route path='/share' element={<Share />} />
           </>
         )}
-        {!user && (
+        {(!user || !user.token) && (
           <>
             <Route path='/' element={<Login />} />
             <Route path='/register' element={<Register />} />

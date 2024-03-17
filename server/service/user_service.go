@@ -12,4 +12,6 @@ type UserService interface {
 	Delete(userId int)
 	FindById(userId int) response.User
 	FindAll() []response.User
+	HashPassword(password string) string
+	VerifyPassword(userPassword string, provicedPassword string) (bool, string)
 }

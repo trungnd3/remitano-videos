@@ -38,7 +38,7 @@ export default function Sidebar() {
         <SheetHeader className='h-full'>
           <SheetTitle>
             <p>Welcome,</p>
-            <p>{user}</p>
+            <p>{user.username}</p>
           </SheetTitle>
           <Separator className='my-4' />
           <div className='pt-4 flex items-center justify-end gap-2'>

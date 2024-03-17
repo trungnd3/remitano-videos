@@ -49,15 +49,16 @@ func (uc *UserController) SignIn(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&signInRequest)
 	helper.ErrorPanic(err)
 
-	username, err := uc.UserService.SignIn(signInRequest)
+	token, err := uc.UserService.SignIn(signInRequest)
 	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
-		Data: username,
+		Data: token,
 	}
 	if err != nil {
-		apiResponse.Code = http.StatusForbidden
-		apiResponse.Status = "403"
+		apiResponse.Code = http.StatusNotFound
+		apiResponse.Status = "404"
+		apiResponse.Data = err.Error()
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)

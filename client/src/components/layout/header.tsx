@@ -16,7 +16,7 @@ export default function Header() {
             <Logo />
           </Link>
         </div>
-        {!!user && (
+        {!!user && !!user.token && (
           <div className='flex flex-1 items-center justify-end space-x-2 gap-2'>
             <Navbar />
             <Sidebar />

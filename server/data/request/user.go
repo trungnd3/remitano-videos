@@ -6,5 +6,7 @@ type CreateUser struct {
 }
 
 type UpdateUser struct {
-	Id		int	`validate:"required"`
+	Id						int			`validate:"required" json:"id"`
+	Token					string	`json:"token"`
+	RefreshToken	string	`json:"refresh_token"`
 }

@@ -6,6 +6,8 @@ services:
       context: ./postgres
       dockerfile: Dockerfile.dev
     restart: unless-stopped
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -35,6 +37,7 @@ services:
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
       PGPORT: ${POSTGRES_PORT}
+      SECRET_KEY: ${SECRET_KEY}
     depends_on:
       - postgres
   client:

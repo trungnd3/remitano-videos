@@ -9,6 +9,7 @@ type Video struct {
 	Description		string	`gorm:"type:text"`
 	ThumbnailURL	string	`gorm:"type:varchar(255)"`
 	SourceURL			string	`gorm:"type:varchar(255)"`
+	YoutubeId			string	`gorm:"type:varchar(100)"`
 	Likes					int			`gorm:"type:int"`
 	Dislikes			int			`gorm:"type:int"`
 	UserId				int			`gorm:"type:int"`

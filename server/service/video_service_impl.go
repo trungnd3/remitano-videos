@@ -2,9 +2,10 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/trungnd3/remitano-videos/data/response"
@@ -28,42 +29,71 @@ func NewVideoServiceImpl(userRepo repository.UserRepo, videoRepo repository.Vide
 }
 
 // Share implements VideoService.
-func (vs *VideoServiceImpl) Share(videoUrl string, username string) error {
+func (vs *VideoServiceImpl) Share(videoUrl string, username string) (*response.Video, error) {
 	user, err := vs.UserRepo.FindByUsername(username)
-	helper.ErrorPanic(err)
-	
-	youtubeUrl := "https://www.youtube.com/oembed?url=" + videoUrl + "&format=json"
-	resp, err := http.Get(youtubeUrl)	
 	if err != nil {
-		return err
+		return nil, err
+	}
+	
+	// Parse youtube video to get non HTTP method url & youtube ID
+	parseUrl, youtubeId := vs.handleYoutubeUrl(videoUrl)
+
+	// Find already exist video
+	foundVideo, err := vs.VideoRepo.FindByYoutubeId(youtubeId)
+	if foundVideo != nil {
+		return nil, errors.New("Video is already shared")
+	}
+
+	oembedUrl := "https://www.youtube.com/oembed?url=" + parseUrl + "&format=json"
+	resp, err := http.Get(oembedUrl)
+	if err != nil {
+		return nil, err
 	}
 
 	//We Read the response body on the line below.
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		 return err
+		 return nil, err
 	}
 
 	var ytData response.Youtube
 
 	//Convert the body to type string
 	err = json.Unmarshal(body, &ytData)
-	helper.ErrorPanic(err)
+	if err != nil {
+		return nil, err
+ }
 
 	video := model.Video{
 		Title: ytData.Title,
 		Description: ytData.Title,
 		ThumbnailURL: ytData.ThumbnailUrl,
 		SourceURL: videoUrl,
+		YoutubeId: youtubeId,
 		UserId: user.Id,
 	}
-	fmt.Printf("%+v\n", video)
 
-	vs.VideoRepo.Save(video)
+	createdId, err := vs.VideoRepo.Save(video)
+	if err != nil {
+		return nil, err
+	}
+	video.Id = createdId
 
 	vs.UserRepo.Associate(*user, video)
 
-	return nil
+	responseVideo := &response.Video{
+		Id: video.Id,
+		Title: video.Title,
+		Description: video.Description,
+		ThumbnailURL: video.ThumbnailURL,
+		SourceURL: video.SourceURL,
+		YoutubeId: video.YoutubeId,
+		Likes: video.Likes,
+		Dislikes: video.Dislikes,
+		SharedBy: username,
+	}
+
+	return responseVideo, nil
 }
 
 // FindAll implements VideoService.
@@ -82,6 +112,7 @@ func (vs *VideoServiceImpl) FindAll() []response.Video {
 			Title: value.Title,
 			ThumbnailURL: value.ThumbnailURL,
 			SourceURL: value.SourceURL,
+			YoutubeId: value.YoutubeId,
 			SharedBy: user.Username,
 			Likes: value.Likes,
 			Dislikes: value.Dislikes,
@@ -104,6 +135,7 @@ func (vs *VideoServiceImpl) FindById(videoId int) response.Video {
 		Title: result.Title,
 		ThumbnailURL: result.ThumbnailURL,
 		SourceURL: result.SourceURL,
+		YoutubeId: result.YoutubeId,
 		SharedBy: user.Username,
 		Likes: result.Likes,
 		Dislikes: result.Dislikes,
@@ -121,4 +153,35 @@ func (vs *VideoServiceImpl) Dislike() int {
 	panic("unimplemented")
 }
 
+func (vs *VideoServiceImpl) handleYoutubeUrl(url string) (string, string) {
+	// https://www.youtube.com/watch?v=QY2Sj7-MMgM&theme=1
+	// https://youtu.be/QY2Sj7-MMgM
+	
+	parsedUrl := ""
+	youtubeId := ""
+	urlParts := strings.Split(url, "://")
 
+	if len(urlParts) == 1 {
+		parsedUrl = urlParts[0]
+		} else {
+		parsedUrl = urlParts[1]
+	}
+
+	urlParts = strings.Split(parsedUrl, "/")
+	if urlParts[0] == "youtu.be" {
+		youtubeId = urlParts[1]
+	} else {
+		query := strings.Split(urlParts[1], "?")
+		queryParts := strings.Split(query[1], "&")
+
+		for _, part := range queryParts {
+			parts := strings.Split(part, "=")
+			if parts[0] == "v" {
+				youtubeId = parts[1]
+				break;
+			}
+		}
+	}
+
+	return parsedUrl, youtubeId
+}

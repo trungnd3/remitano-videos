@@ -16,7 +16,7 @@ export default function Play() {
   }
 
   const video = useAppSelector((state) =>
-    state.video.items.find((item) => item.id === params.id)
+    state.video.items.find((item) => item.id === parseInt(params.id || ''))
   );
 
   if (!video) {

@@ -1,66 +1,17 @@
-export const VIDEOS = [
-  {
-    id: '1',
-    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-    title: 'Back End Developer Roadmap 2024',
-    sharedBy: 'trungnguyen@gmail.com',
-    likes: 12,
-    dislikes: 3,
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-  },
-  {
-    id: '2',
-    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-    title: 'Back End Developer Roadmap 2024',
-    sharedBy: 'trungnguyen@gmail.com',
-    likes: 12,
-    dislikes: 3,
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-  },
-  {
-    id: '3',
-    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-    title: 'Back End Developer Roadmap 2024',
-    sharedBy: 'trungnguyen@gmail.com',
-    likes: 12,
-    dislikes: 3,
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-  },
-  {
-    id: '4',
-    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-    title: 'Back End Developer Roadmap 2024',
-    sharedBy: 'trungnguyen@gmail.com',
-    likes: 12,
-    dislikes: 3,
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-  },
-  {
-    id: '5',
-    thumbnail: 'https://i.ytimg.com/vi/tN6oJu2DqCM/hqdefault.jpg',
-    title: 'Back End Developer Roadmap 2024',
-    sharedBy: 'trungnguyen@gmail.com',
-    likes: 12,
-    dislikes: 3,
-    description:
-      'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-  },
-];
-
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunkDispatch, RootState } from '.';
+import { toast } from '../components/ui/use-toast';
 
 export interface IVideo {
-  id: string;
-  thumbnail: string;
+  id: number;
   title: string;
-  sharedBy: string;
+  description: string;
+  thumbnailUrl: string;
+  sourceUrl: string;
+  youtubeId: string;
   likes: number;
   dislikes: number;
-  description: string;
+  sharedBy: string;
 }
 
 export interface IVideoState {
@@ -68,13 +19,91 @@ export interface IVideoState {
 }
 
 const initialState: IVideoState = {
-  items: VIDEOS,
+  items: [],
 };
+
+export function fetchVideos() {
+  return async function (
+    dispatch: AppThunkDispatch,
+    getState: () => RootState
+  ) {
+    const state = getState();
+    try {
+      const response = await fetch('/api/videos', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${state.auth.user.token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.code === 200) {
+        console.log(data);
+        dispatch(videoActions.replace({ items: data.data }));
+      } else {
+        toast({
+          title: 'Unable to fetch videos',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Unexpected error',
+      });
+    }
+  };
+}
+
+interface ResponseData<T> {
+  code: number;
+  status: string;
+  data: T;
+}
+
+export function shareVideo(url: string, callback?: () => void) {
+  return async function (
+    dispatch: AppThunkDispatch,
+    getState: () => RootState
+  ) {
+    const state = getState();
+    try {
+      const response = await fetch('/api/videos', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${state.auth.user.token}`,
+        },
+        body: JSON.stringify({ url }),
+      });
+
+      const data: ResponseData<IVideo> = await response.json();
+
+      if (data.code === 200) {
+        dispatch(videoActions.add(data.data));
+        if (!!callback) callback();
+      } else {
+        toast({
+          title: 'Unable to share video',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Unexpected error',
+      });
+    }
+  };
+}
 
 export const videoSlice = createSlice({
   name: 'video',
   initialState,
-  reducers: {},
+  reducers: {
+    replace(state, action: PayloadAction<IVideoState>) {
+      state.items = action.payload.items;
+    },
+    add(state, action: PayloadAction<IVideo>) {
+      state.items = [...state.items, action.payload];
+    },
+  },
 });
 
 export const videoActions = videoSlice.actions;

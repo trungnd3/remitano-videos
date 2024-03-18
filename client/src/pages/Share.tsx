@@ -1,22 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import { ShareForm } from '@/src/components/forms';
-import { useAppSelector } from '../store';
+import { shareVideo, useAppDispatch } from '@/src/store';
 
 export default function Share() {
-  const token = useAppSelector((state) => state.auth.user.token);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const submitHandler = async (url: string) => {
-    const response = await fetch('/api/videos', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        url,
-      }),
-    });
-
-    const json = await response.json();
-    console.log(json);
+    dispatch(
+      shareVideo(url, () => {
+        navigate('/');
+      })
+    );
   };
 
   return (

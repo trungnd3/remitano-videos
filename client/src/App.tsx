@@ -11,6 +11,7 @@ import Register from '@/src/pages/register';
 import {
   IAuthState,
   authActions,
+  fetchVideos,
   useAppDispatch,
   useAppSelector,
 } from '@/src/store';
@@ -20,14 +21,17 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!user) {
+    if (!user.token) {
       const userStr = localStorage.getItem('user');
       if (!!userStr) {
         const userObj: IAuthState['user'] = JSON.parse(userStr);
         dispatch(authActions.login({ user: { ...userObj } }));
       }
     }
-  }, []);
+    if (!!user.token) {
+      dispatch(fetchVideos());
+    }
+  }, [user.token]);
 
   return (
     <Layout>

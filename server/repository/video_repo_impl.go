@@ -27,7 +27,7 @@ func (v *VideoRepoImpl) Delete(videoId int) {
 // FindAll implements VideoRepo.
 func (v *VideoRepoImpl) FindAll() []model.Video {
 	var videos []model.Video
-	result := v.Db.Model(&model.Video{}).Preload("User").Find(&videos)
+	result := v.Db.Find(&videos)
 	helper.ErrorPanic(result.Error)
 	return videos
 }
@@ -42,11 +42,21 @@ func (v *VideoRepoImpl) FindById(videoId int) (model.Video, error) {
 	return video, errors.New("Video not found")
 }
 
+// FindByYoutubeId implements VideoRepo.
+func (v *VideoRepoImpl) FindByYoutubeId(youtubeId string) (*model.Video, error) {
+	var vid = &model.Video{}
+	v.Db.Where(&model.Video{YoutubeId: youtubeId}).First(&vid)
+	if vid.Id > 0 {
+		return vid, nil
+	}
+	return nil, errors.New("Video not found")
+}
+
 // Save implements VideoRepo.
-func (v *VideoRepoImpl) Save(video model.Video) {
+func (v *VideoRepoImpl) Save(video model.Video) (int, error) {
 	// v.Db.Model(&video).Association("User").Append(&model.User{Username: video.User.Username})
-	result := v.Db.Create(&video).Save(&video)
-	helper.ErrorPanic(result.Error)
+	result := v.Db.Create(&video)
+	return video.Id, result.Error
 }
 
 // Update implements VideoRepo.

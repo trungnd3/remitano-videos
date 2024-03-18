@@ -32,10 +32,9 @@ func NewRouter(
 
 	videosGroup := router.Group("/videos")
 	videosGroup.Use(middleware.Authenticate)
-	// videosGroup.GET("", videoController.FindAll)
+	videosGroup.GET("", videoController.FindAll)
 	// videosGroup.GET("/:userId", videoController.FindById)
 	videosGroup.POST("", videoController.Share)
-	// videosGroup.POST("/signin", videoController.SignIn)
 	// videosGroup.DELETE("/:userId", videoController.Delete)
 
 	return router

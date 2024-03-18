@@ -7,7 +7,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/data/response"
-	"github.com/trungnd3/remitano-videos/helper"
 	"github.com/trungnd3/remitano-videos/service"
 )
 
@@ -44,13 +43,37 @@ func (vc *VideoController) Share(ctx *gin.Context) {
 
 	shareRequest := request.ShareVideo{}
 	err := ctx.ShouldBindJSON(&shareRequest)
-	helper.ErrorPanic(err)
-
-	err = vc.VideoService.Share(shareRequest.Url, usernameStr)
-
+	if err != nil {
+		apiResponse.Code = http.StatusConflict
+		apiResponse.Status = "Invalid request"
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
+	}
+	
+	video, err := vc.VideoService.Share(shareRequest.Url, usernameStr)
+	
 	if err != nil {
 		apiResponse.Code = http.StatusConflict
 		apiResponse.Status = err.Error()
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
+	}
+	apiResponse.Data = video
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(apiResponse.Code, apiResponse)
+}
+
+// FindAll Controller
+func (vc *VideoController) FindAll(ctx *gin.Context) {
+	log.Info().Msg("finding videos...")
+	videosResponse := vc.VideoService.FindAll()
+	
+	apiResponse := response.Api{
+		Code: http.StatusOK,
+		Status: "OK",
+		Data: videosResponse,
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)

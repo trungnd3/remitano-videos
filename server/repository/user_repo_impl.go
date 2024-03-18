@@ -3,7 +3,6 @@ package repository
 import (
 	"errors"
 
-	"github.com/rs/zerolog/log"
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/helper"
 	"github.com/trungnd3/remitano-videos/model"
@@ -67,7 +66,6 @@ func (u *UserRepoImpl) FindByUsername(username string) (*model.User, error) {
 	var user = &model.User{}
 	result := u.Db.Where(&model.User{Username: username}).First(&user)
 	if result.Error != nil {
-		log.Info().Msgf("%+v\n", result)
 		return nil, errors.New("User not found")
 	}
 	return user, nil

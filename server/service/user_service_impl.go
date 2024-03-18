@@ -27,16 +27,16 @@ func NewUserServiceImpl(userRepo repository.UserRepo, validate *validator.Valida
 }
 
 // Create implements UserService.
-func (us *UserServiceImpl) Create(user request.CreateUser) (string, error) {
+func (us *UserServiceImpl) Create(user request.CreateUser) (int, string, error) {
 	err := us.Validate.Struct(user)
 	if err != nil {
 		log.Info().Msgf("Error: %s\n", err.Error())
-		return "", err
+		return 0, "", err
 	}
 
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 	if (userData != nil) {
-		return "", errors.New("User already exists.")
+		return 0, "", errors.New("User already exists.")
 	}
 
 	password := us.HashPassword(user.Password)
@@ -51,19 +51,19 @@ func (us *UserServiceImpl) Create(user request.CreateUser) (string, error) {
 		RefreshToken: refreshToken,
 	}
 	us.UserRepo.Save(userModel)
-	return token, nil
+	return userData.Id, token, nil
 }
 
-func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
+func (us *UserServiceImpl) SignIn(user request.CreateUser) (int, string, error) {
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 
 	if (err != nil || userData == nil) {
-		return "", errors.New("User does not exist")
+		return 0, "", errors.New("User does not exist")
 	}
 
 	passwordIsValid, msg := us.VerifyPassword(user.Password, userData.Password)
 	if passwordIsValid != true {
-		return "", errors.New(msg)
+		return 0, "", errors.New(msg)
 	}
 
 	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
@@ -74,7 +74,7 @@ func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 	}
 	us.UserRepo.Update(*updateUser)
 
-	return token, nil
+	return userData.Id, token, nil
 }
 
 // Delete implements UserService.
@@ -90,7 +90,7 @@ func (us *UserServiceImpl) FindAll() []response.User {
 	for _, value := range result {
 		user := response.User{
 			Id: value.Id,
-			Username: value.Username,
+			Token: value.Token,
 		}
 		users = append(users, user)
 	}
@@ -104,7 +104,7 @@ func (us *UserServiceImpl) FindById(userId int) response.User {
 	helper.ErrorPanic(err)
 	user := response.User{
 		Id: userData.Id,
-		Username: userData.Username,
+		Token: userData.Token,
 	}
 	return user
 }

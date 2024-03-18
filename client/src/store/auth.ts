@@ -5,6 +5,7 @@ import { toast } from '@/src/components/ui/use-toast';
 
 export interface IAuthState {
   user: {
+    id: number;
     username: string;
     token: string;
   };
@@ -12,6 +13,7 @@ export interface IAuthState {
 
 const initialState: IAuthState = {
   user: {
+    id: 0,
     username: '',
     token: '',
   },
@@ -32,8 +34,9 @@ export function signInUser(username: string, password: string) {
 
       if (data.code === 200) {
         const user = {
+          id: data.data.id,
+          token: data.data.token,
           username: username,
-          token: data.data,
         };
         localStorage.setItem('user', JSON.stringify(user));
         dispatch(authActions.login({ user }));
@@ -66,8 +69,9 @@ export function createUser(username: string, password: string) {
 
       if (data.code === 200) {
         const user = {
+          id: data.data.id,
+          token: data.data.token,
           username: username,
-          token: data.data,
         };
         localStorage.setItem('user', JSON.stringify(user));
         dispatch(authActions.login({ user }));

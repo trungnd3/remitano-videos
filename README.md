@@ -50,13 +50,19 @@ git clone https://github.com/trungnd3/remitano-videos.git
 
 3. Change to the cloned project directory and open terminal.
 
+4. Create external volume for postgres container:
+
+```
+docker volume create dbremitano
+```
+
 4. Run the following command:
 
 ```
-docker compose -f docker-compose-dev.yml up
+docker compose -f docker-compose-dev.yml up -d --build
 ```
 
-5. After few miniutes the project will up and run via `localhost`. The terminal will also running the test suites in watch mode.
+5. After few miniutes the project will up and run via `localhost:3050`. The terminal will also running the test suites in watch mode.
 
 ## Usage
 

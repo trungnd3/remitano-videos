@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunkDispatch, RootState } from '.';
-import { toast } from '../components/ui/use-toast';
+import { AppThunkDispatch } from '.';
+import { toast } from '@/src/components/ui/use-toast';
+import { getWithAuth, postWithAuth } from '../lib/utils';
 
 export interface IVideo {
   id: number;
@@ -9,8 +10,8 @@ export interface IVideo {
   thumbnailUrl: string;
   sourceUrl: string;
   youtubeId: string;
-  likes: number;
-  dislikes: number;
+  likes: number[];
+  dislikes: number[];
   sharedBy: string;
 }
 
@@ -23,21 +24,9 @@ const initialState: IVideoState = {
 };
 
 export function fetchVideos() {
-  return async function (
-    dispatch: AppThunkDispatch,
-    getState: () => RootState
-  ) {
-    const state = getState();
+  return async function (dispatch: AppThunkDispatch) {
     try {
-      const response = await fetch('/api/videos', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${state.auth.user.token}`,
-        },
-      });
-
-      const data = await response.json();
-
+      const data = await getWithAuth<IVideo[]>('videos');
       if (data.code === 200) {
         console.log(data);
         dispatch(videoActions.replace({ items: data.data }));
@@ -54,32 +43,54 @@ export function fetchVideos() {
   };
 }
 
-interface ResponseData<T> {
-  code: number;
-  status: string;
-  data: T;
-}
-
 export function shareVideo(url: string, callback?: () => void) {
-  return async function (
-    dispatch: AppThunkDispatch,
-    getState: () => RootState
-  ) {
-    const state = getState();
+  return async function (dispatch: AppThunkDispatch) {
     try {
-      const response = await fetch('/api/videos', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${state.auth.user.token}`,
-        },
-        body: JSON.stringify({ url }),
-      });
-
-      const data: ResponseData<IVideo> = await response.json();
-
+      const data = await postWithAuth<IVideo>(
+        'videos',
+        JSON.stringify({ url })
+      );
       if (data.code === 200) {
         dispatch(videoActions.add(data.data));
         if (!!callback) callback();
+      } else {
+        toast({
+          title: 'Unable to share video',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Unexpected error',
+      });
+    }
+  };
+}
+
+interface IPreferVideo {
+  likes: number[];
+  dislikes: number[];
+}
+interface IReplacePrefer {
+  id: number;
+  likes: number[];
+  dislikes: number[];
+}
+
+export function preferVideo(id: number, liked: boolean) {
+  return async function (dispatch: AppThunkDispatch) {
+    try {
+      const data = await postWithAuth<IPreferVideo>(
+        'videos/prefer',
+        JSON.stringify({ id, liked })
+      );
+      if (data.code === 200) {
+        dispatch(
+          videoActions.updatePrefer({
+            id,
+            likes: data.data.likes,
+            dislikes: data.data.dislikes,
+          })
+        );
       } else {
         toast({
           title: 'Unable to share video',
@@ -102,6 +113,20 @@ export const videoSlice = createSlice({
     },
     add(state, action: PayloadAction<IVideo>) {
       state.items = [...state.items, action.payload];
+    },
+    updatePrefer(state, action: PayloadAction<IReplacePrefer>) {
+      const updatedItems = [...state.items];
+      const index = updatedItems.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      if (index > -1) {
+        updatedItems[index] = {
+          ...updatedItems[index],
+          likes: [...action.payload.likes],
+          dislikes: [...action.payload.dislikes],
+        };
+      }
+      state.items = [...updatedItems];
     },
   },
 });

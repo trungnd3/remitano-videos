@@ -1,6 +1,11 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
+)
+
+type UserLts []int
 
 type Video struct {
 	gorm.Model
@@ -10,7 +15,7 @@ type Video struct {
 	ThumbnailURL	string	`gorm:"type:varchar(255)"`
 	SourceURL			string	`gorm:"type:varchar(255)"`
 	YoutubeId			string	`gorm:"type:varchar(100)"`
-	Likes					int			`gorm:"type:int"`
-	Dislikes			int			`gorm:"type:int"`
+	Likes					datatypes.JSONSlice[int]
+	Dislikes			datatypes.JSONSlice[int]
 	UserId				int			`gorm:"type:int"`
 }

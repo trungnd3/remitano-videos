@@ -21,15 +21,11 @@ func NewVideoController(videoService service.VideoService) *VideoController {
 }
 
 func (vc *VideoController) Share(ctx *gin.Context) {
-	// createVideoRequest := request.CreateVideo{}
-	// err := ctx.ShouldBindJSON(&createUserRequest)
-	// helper.ErrorPanic(err)
 	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: nil,
 	}
-	log.Info().Msg("sharing video...")
 	username, exists := ctx.Get("username")
 	if !exists {
 		apiResponse.Code = http.StatusForbidden
@@ -39,13 +35,12 @@ func (vc *VideoController) Share(ctx *gin.Context) {
 		return
 	}
 	usernameStr, _ := username.(string)
-	log.Info().Msg(usernameStr)
 
 	shareRequest := request.ShareVideo{}
 	err := ctx.ShouldBindJSON(&shareRequest)
 	if err != nil {
-		apiResponse.Code = http.StatusConflict
-		apiResponse.Status = "Invalid request"
+		apiResponse.Code = http.StatusBadRequest
+		apiResponse.Status = "Bad request"
 		ctx.Header("Content-Type", "application/json")
 		ctx.JSON(apiResponse.Code, apiResponse)
 		return
@@ -74,6 +69,52 @@ func (vc *VideoController) FindAll(ctx *gin.Context) {
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: videosResponse,
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(apiResponse.Code, apiResponse)
+}
+
+
+// Prefer Controller
+func (vc *VideoController) Prefer(ctx *gin.Context) {
+	apiResponse := response.Api{
+		Code: http.StatusOK,
+		Status: "OK",
+		Data: nil,
+	}
+
+	username, exists := ctx.Get("username")
+	if !exists {
+		apiResponse.Code = http.StatusForbidden
+		apiResponse.Status = "Not authenticated"
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
+	}
+	usernameStr, _ := username.(string)
+
+	preferRequest := request.PreferVideo{}
+	err := ctx.ShouldBindJSON(&preferRequest)
+	if err != nil {
+		apiResponse.Code = http.StatusBadRequest
+		apiResponse.Status = "Bad request"
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
+	}
+
+	likes, dislikes, err := vc.VideoService.Prefer(usernameStr, preferRequest.Id, preferRequest.Liked)
+	if err != nil {
+		apiResponse.Code = http.StatusInternalServerError
+		apiResponse.Status = err.Error()
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
+	}
+
+	apiResponse.Data = &response.PreferVideo{
+		Likes: likes,
+		Dislikes: dislikes,
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)

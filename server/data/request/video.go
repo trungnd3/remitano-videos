@@ -1,5 +1,9 @@
 package request
 
+import (
+	"gorm.io/datatypes"
+)
+
 type ShareVideo struct {
 	Url						string `json:"url"`
 }
@@ -10,8 +14,8 @@ type CreateVideo struct {
 	ThumbnailURL	string	`validate:"required" json:"thumbnailUrl"`
 	SourceURL			string	`validate:"required" json:"sourceUrl"`
 	YoutubeId			string	`validate:"required" json:"youtubeId"`
-	Likes					int			`json:"likes"`
-	Dislikes			int			`json:"dislikes"`
+	Likes					datatypes.JSONSlice[int]		`json:"likes"`
+	Dislikes			datatypes.JSONSlice[int]		`json:"dislikes"`
 	SharedBy			string	`json:"sharedBy"`
 }
 
@@ -22,7 +26,12 @@ type UpdateVideo struct {
 	ThumbnailURL	string	`validate:"required" json:"thumbnailUrl"`
 	SourceURL			string	`validate:"required" json:"sourceUrl"`
 	YoutubeId			string	`validate:"required" json:"youtubeId"`
-	Likes					int			`json:"likes"`
-	Dislikes			int			`json:"dislikes"`
+	Likes					datatypes.JSONSlice[int]		`json:"likes"`
+	Dislikes			datatypes.JSONSlice[int]		`json:"dislikes"`
 	SharedBy			string	`json:"sharedBy"`
+}
+
+type PreferVideo struct {
+	Id						int			`validate:"require" json:"id"`
+	Liked					bool		`json:"liked"`
 }

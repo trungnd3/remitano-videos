@@ -12,15 +12,35 @@ import {
   CardImage,
   CardTitle,
 } from '@/src/components/ui/card';
-import { Button } from '@/src/components/ui/button';
-import { useAppSelector } from '@/src/store';
+import Prefer from '@/src/components/common/prefer';
+import { preferVideo, useAppDispatch, useAppSelector } from '@/src/store';
 
 export default function Home() {
   const navigate = useNavigate();
   const videos = useAppSelector((state) => state.video.items);
+  const loggedInUser = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
 
   const cardClickHandler: MouseEventHandler<HTMLDivElement> = (event) => {
     navigate(`/play/${event.currentTarget?.id}`);
+  };
+
+  const likeHandler: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const card = event.currentTarget.closest('.video-card');
+    const videoId = parseInt(card?.id || '');
+
+    if (videoId > 0) {
+      dispatch(preferVideo(videoId, true));
+    }
+  };
+
+  const dislikeHandler: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const card = event.currentTarget.closest('.video-card');
+    const videoId = parseInt(card?.id || '');
+
+    if (videoId > 0) {
+      dispatch(preferVideo(videoId, false));
+    }
   };
 
   return (
@@ -38,7 +58,7 @@ export default function Home() {
             <Card
               key={video.id}
               id={video.id.toString()}
-              className='flex flex-col hover:shadow-slate-700 hover:shadow-2xl'
+              className='video-card flex flex-col hover:shadow-slate-700 hover:shadow-2xl'
             >
               <div className='flex-1'>
                 <CardImage
@@ -73,20 +93,18 @@ export default function Home() {
                   <p className='font-bold'>{video.sharedBy}</p>
                 </div>
                 <div className='flex gap-4'>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='group hover:bg-red-500 cursor-pointer'
-                  >
-                    <ThumbsUp className='group-hover:text-white' />
-                  </Button>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='group hover:bg-red-500 cursor-pointer'
-                  >
-                    <ThumbsDown className='group-hover:text-white' />
-                  </Button>
+                  <Prefer
+                    handler={likeHandler}
+                    Icon={ThumbsUp}
+                    count={video.likes.length}
+                    active={video.likes.includes(loggedInUser.id)}
+                  />
+                  <Prefer
+                    handler={dislikeHandler}
+                    Icon={ThumbsDown}
+                    count={video.dislikes.length}
+                    active={video.dislikes.includes(loggedInUser.id)}
+                  />
                 </div>
               </CardFooter>
             </Card>

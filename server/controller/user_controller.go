@@ -29,7 +29,7 @@ func (uc *UserController) Create(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&createUserRequest)
 	helper.ErrorPanic(err)
 
-	token, err := uc.UserService.Create(createUserRequest)
+	id, token, err := uc.UserService.Create(createUserRequest)
 
 	apiResponse := response.Api{
 		Code: http.StatusOK,
@@ -41,7 +41,10 @@ func (uc *UserController) Create(ctx *gin.Context) {
 		apiResponse.Status = "Confict"
 		apiResponse.Data = err.Error()
 	}
-	apiResponse.Data = token
+	apiResponse.Data = &response.User{
+		Id: id,
+		Token: token,
+	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)
 }
@@ -51,11 +54,14 @@ func (uc *UserController) SignIn(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&signInRequest)
 	helper.ErrorPanic(err)
 
-	token, err := uc.UserService.SignIn(signInRequest)
+	id, token, err := uc.UserService.SignIn(signInRequest)
 	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
-		Data: token,
+		Data: &response.User{
+			Id: id,
+			Token: token,
+		},
 	}
 	if err != nil {
 		apiResponse.Code = http.StatusNotFound
@@ -79,7 +85,6 @@ func (uc *UserController) Delete(ctx *gin.Context) {
 		Data: nil,
 	}
 	userResponse := uc.UserService.FindById(id)
-	log.Info().Msg(userResponse.Username)
 	if (userResponse == response.User{}) {
 		apiResponse.Code = http.StatusNotFound
 		apiResponse.Status = "User not found"

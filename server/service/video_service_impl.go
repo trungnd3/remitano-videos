@@ -12,6 +12,7 @@ import (
 	"github.com/trungnd3/remitano-videos/helper"
 	"github.com/trungnd3/remitano-videos/model"
 	"github.com/trungnd3/remitano-videos/repository"
+	"gorm.io/datatypes"
 )
 
 type VideoServiceImpl struct {
@@ -71,6 +72,8 @@ func (vs *VideoServiceImpl) Share(videoUrl string, username string) (*response.V
 		SourceURL: videoUrl,
 		YoutubeId: youtubeId,
 		UserId: user.Id,
+		Likes: datatypes.JSONSlice[int]{},
+		Dislikes: datatypes.JSONSlice[int]{},
 	}
 
 	createdId, err := vs.VideoRepo.Save(video)
@@ -94,6 +97,63 @@ func (vs *VideoServiceImpl) Share(videoUrl string, username string) (*response.V
 	}
 
 	return responseVideo, nil
+}
+
+func (vs *VideoServiceImpl) Prefer(username string, videoId int, liked bool) (datatypes.JSONSlice[int], datatypes.JSONSlice[int], error) {
+	user, err := vs.UserRepo.FindByUsername(username)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	video, err := vs.VideoRepo.FindById(videoId)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if liked {
+		// user clicked the like button
+		uIndex := helper.Index(video.Likes, user.Id)
+		if uIndex > -1 {
+			// this means user already liked this video
+			// we will delete userId from the Likes slice
+			video.Likes = append(video.Likes[:uIndex], video.Likes[uIndex + 1:]...)
+		} else {
+			// user haven't liked the video
+			// we will update the Likes slice
+			video.Likes = append(video.Likes, user.Id)
+		}
+
+		// also need to remove from Dislikes slice 
+		// if user likes the video
+		uIndex = helper.Index(video.Dislikes, user.Id)
+		if uIndex > -1 {
+			video.Dislikes = append(video.Dislikes[:uIndex], video.Dislikes[uIndex + 1:]...)
+		}
+	} else {
+		// user clicked the dislike button
+		uIndex := helper.Index(video.Dislikes, user.Id)
+		if uIndex > -1 {
+			// this means user already disliked this video
+			// we will delete userId from the Dislikes slice
+			video.Dislikes = append(video.Dislikes[:uIndex], video.Dislikes[uIndex + 1:]...)
+		} else {
+			// user haven't disliked the video
+			// we will update the Dislikes slice
+			video.Dislikes = append(video.Dislikes, user.Id)
+		}
+
+		// also need to remove from Likes slice 
+		// if user dislikes the video
+		uIndex = helper.Index(video.Likes, user.Id)
+		if uIndex > -1 {
+			video.Likes = append(video.Likes[:uIndex], video.Likes[uIndex + 1:]...)
+		}
+	}
+
+	// finally we update video record
+	vs.VideoRepo.Update(video)
+
+	return video.Likes, video.Dislikes, nil
 }
 
 // FindAll implements VideoService.

@@ -35,7 +35,7 @@ func NewRouter(
 	videosGroup.GET("", videoController.FindAll)
 	// videosGroup.GET("/:userId", videoController.FindById)
 	videosGroup.POST("", videoController.Share)
-	// videosGroup.DELETE("/:userId", videoController.Delete)
+	videosGroup.POST("/prefer", videoController.Prefer)
 
 	return router
 }

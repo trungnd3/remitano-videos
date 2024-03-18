@@ -3,11 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Layout from './components/layout';
 import { Error } from './components/common';
-import Home from './Pages/home.tsx';
-import Share from './Pages/share.tsx';
-import Play from './Pages/play.tsx';
-import Login from './Pages/login.tsx';
-import Register from './Pages/register.tsx';
+import { Home, Share, Play, Login, Register } from './pages';
 import {
   IAuthState,
   authActions,

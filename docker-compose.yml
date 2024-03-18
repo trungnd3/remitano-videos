@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  client:
+    image: 'trunglinh53/remitano-videos-client'
+    mem_limit: 128m
+    hostname: client
+  server:
+    image: 'trunglinh53/remitano-videos-server'
+    mem_limit: 128m
+    hostname: api
+    environment:
+      - PGUSER=$PGUSER
+      - PGHOST=$PGHOST
+      - PGDATABASE=$PGDATABASE
+      - PGPASSWORD=$PGPASSWORD
+      - PGPORT=$PGPORT
+  nginx:
+    image: 'trunglinh53/remitano-videos-nginx'
+    mem_limit: 128m
+    hostname: nginx
+    ports:
+      - 80:80

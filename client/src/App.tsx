@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import Layout from '@/src/components/layout';
-import { Error } from '@/src/components/common';
-import Home from '@/src/pages/home';
-import Share from '@/src/pages/share';
-import Play from '@/src/pages/play';
-import Login from '@/src/pages/login';
-import Register from '@/src/pages/register';
+import Layout from './components/layout';
+import { Error } from './components/common';
+import Home from './pages/home';
+import Share from './pages/share';
+import Play from './pages/play';
+import Login from './pages/login';
+import Register from './pages/register';
 import {
   IAuthState,
   authActions,

@@ -14,7 +14,7 @@ import {
   fetchVideos,
   useAppDispatch,
   useAppSelector,
-} from '@/src/store';
+} from './store';
 
 function App() {
   let user = useAppSelector((state) => state.auth.user);

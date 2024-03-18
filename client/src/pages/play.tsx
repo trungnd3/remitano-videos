@@ -1,15 +1,12 @@
 import { useParams } from 'react-router-dom';
-
-import { AspectRatio } from '@/src/components/ui/aspect-ratio';
-import { Error, Heading } from '@/src/components/common';
+import { Error, VideoCard } from '@/src/components/common';
 import { useAppSelector } from '@/src/store';
+import { AspectRatio } from '@/src/components/ui/aspect-ratio';
 
 // TODO: integrate with video.js
 
 export default function Play() {
   const params = useParams();
-
-  console.log(params);
 
   if (!params.id) {
     return <Error status='404' message='Page not found' />;
@@ -25,15 +22,16 @@ export default function Play() {
 
   return (
     <>
-      <AspectRatio ratio={16 / 9} className='w-full'>
-        <iframe
-          className='video w-full h-full'
-          title='Youtube player'
-          sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
-          src={`https://youtube.com/embed/${video.youtubeId}?autoplay=1&fullscreen=1`}
-        ></iframe>
-      </AspectRatio>
-      <Heading title={video.title} description='Playing...' />
+      <VideoCard video={video}>
+        <AspectRatio ratio={16 / 9} className='w-full'>
+          <iframe
+            className='video w-full h-full'
+            title='Youtube player'
+            sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+            src={`https://youtube.com/embed/${video.youtubeId}?autoplay=1&fullscreen=1`}
+          ></iframe>
+        </AspectRatio>
+      </VideoCard>
     </>
   );
 }

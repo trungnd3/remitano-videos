@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import TextCenter from './text-center';
 
 interface ErrorProps {
   status: string;
@@ -7,12 +7,10 @@ interface ErrorProps {
 
 export default function Error({ status, message }: ErrorProps) {
   return (
-    <>
-      <h1 className='text-3xl font-extrabold'>{status}</h1>
-      <h2 className='text-xl'>{message}</h2>
-      <Link to='/'>
-        <p>Go back to Home</p>
-      </Link>
-    </>
+    <TextCenter
+      title={status}
+      description={message}
+      direct={{ to: '/', text: 'Go back Home' }}
+    />
   );
 }

@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Layout from './components/layout';
 import { Error } from './components/common';
-import { Home, Share, Play, Login, Register } from './pages';
+import { Home, Share, Play, Login, Register } from './screens';
 import {
   IAuthState,
   authActions,

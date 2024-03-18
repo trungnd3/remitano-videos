@@ -30,7 +30,7 @@ export default function Play() {
           className='video w-full h-full'
           title='Youtube player'
           sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
-          src={`https://youtube.com/embed/tN6oJu2DqCM?autoplay=1&fullscreen=1`}
+          src={`https://youtube.com/embed/${video.youtubeId}?autoplay=1&fullscreen=1`}
         ></iframe>
       </AspectRatio>
       <Heading title={video.title} description='Playing...' />

@@ -12,13 +12,19 @@ export default function Register() {
   };
 
   return (
-    <div className='max-w-[50%] m-auto'>
+    <div className='max-w-[60%] m-auto'>
       <AuthForm
         title='Signing Up'
         description='Dont have an account yet? Go ahead and create one.'
         btnText='Register'
-        link={{ href: '/', text: 'Go back to SignIn' }}
         onSubmit={submitHandler}
+        otherSide={{
+          title: 'Already had an account?',
+          description: 'Please log in here',
+          href: '/',
+          btnText: 'Log In',
+        }}
+        formSide='right'
       />
     </div>
   );

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/rs/zerolog/log"
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/data/response"
 	"github.com/trungnd3/remitano-videos/helper"
@@ -26,14 +27,16 @@ func NewUserServiceImpl(userRepo repository.UserRepo, validate *validator.Valida
 }
 
 // Create implements UserService.
-func (us *UserServiceImpl) Create(user request.CreateUser) error {
+func (us *UserServiceImpl) Create(user request.CreateUser) (string, error) {
 	err := us.Validate.Struct(user)
-	helper.ErrorPanic(err)
+	if err != nil {
+		log.Info().Msgf("Error: %s\n", err.Error())
+		return "", err
+	}
 
 	userData, err := us.UserRepo.FindByUsername(user.Username)
-	helper.ErrorPanic(err)
 	if (userData != nil) {
-		return errors.New("User already exists.")
+		return "", errors.New("User already exists.")
 	}
 
 	password := us.HashPassword(user.Password)
@@ -48,15 +51,14 @@ func (us *UserServiceImpl) Create(user request.CreateUser) error {
 		RefreshToken: refreshToken,
 	}
 	us.UserRepo.Save(userModel)
-	return nil
+	return token, nil
 }
 
 func (us *UserServiceImpl) SignIn(user request.CreateUser) (string, error) {
 	userData, err := us.UserRepo.FindByUsername(user.Username)
-	helper.ErrorPanic(err)
 
-	if (userData == nil) {
-		return "", errors.New("User does not exist.")
+	if (err != nil || userData == nil) {
+		return "", errors.New("User does not exist")
 	}
 
 	passwordIsValid, msg := us.VerifyPassword(user.Password, userData.Password)

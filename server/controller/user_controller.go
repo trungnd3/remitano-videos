@@ -29,17 +29,19 @@ func (uc *UserController) Create(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&createUserRequest)
 	helper.ErrorPanic(err)
 
-	err = uc.UserService.Create(createUserRequest)
+	token, err := uc.UserService.Create(createUserRequest)
 
 	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
-		Data: nil,
+		Data: token,
 	}
 	if err != nil {
 		apiResponse.Code = http.StatusConflict
-		apiResponse.Status = err.Error()
+		apiResponse.Status = "Confict"
+		apiResponse.Data = err.Error()
 	}
+	apiResponse.Data = token
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)
 }

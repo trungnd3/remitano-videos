@@ -39,7 +39,7 @@ export function signInUser(username: string, password: string) {
         dispatch(authActions.login({ user }));
       } else {
         toast({
-          title: 'Unable to sign in',
+          title: data.data,
         });
       }
     } catch (error) {
@@ -73,7 +73,7 @@ export function createUser(username: string, password: string) {
         dispatch(authActions.login({ user }));
       } else {
         toast({
-          title: 'Unable to create user',
+          title: data.data,
         });
       }
     } catch (error) {

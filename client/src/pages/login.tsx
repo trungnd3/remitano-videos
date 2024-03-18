@@ -9,13 +9,19 @@ export default function Login() {
   };
 
   return (
-    <div className='max-w-[50%] m-auto'>
+    <div className='max-w-[60%] m-auto'>
       <AuthForm
         title='Signing In'
         description='Login to watch and share videos'
         btnText='Log In'
-        link={{ href: '/register', text: 'Register here' }}
         onSubmit={submitHandler}
+        otherSide={{
+          title: 'Have no account?',
+          description: 'Please register here',
+          href: '/register',
+          btnText: 'Register',
+        }}
+        formSide='left'
       />
     </div>
   );

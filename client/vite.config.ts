@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@/src': path.resolve(__dirname, './src/*'),
+      '@/src': path.resolve(__dirname, './src'),
     },
   },
   build: {
@@ -21,7 +21,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './tests/setup.ts',
     alias: {
-      '@/tests': path.resolve(__dirname, './tests/*'),
+      '@/tests': path.resolve(__dirname, './tests'),
     },
   },
 });

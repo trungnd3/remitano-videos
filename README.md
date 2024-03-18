@@ -72,7 +72,7 @@ docker compose -f docker-compose-dev.yml up --build
 If you want to stop the docker containers, run this command:
 
 ```
-docker compose -f docker-compose-dev.yml up --build
+docker compose -f docker-compose-dev.yml down
 ```
 
 6. After few miniutes the project will up and run via `localhost:3050`. The terminal will also running the test suites in watch mode.

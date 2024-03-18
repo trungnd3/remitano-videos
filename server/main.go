@@ -47,7 +47,6 @@ func main() {
 	routes := router.NewRouter(userController, videoController)
 
 	server := &http.Server{
-		Addr: ":8080",
 		Handler: routes,
 	}
 

@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { authSlice, authActions, IAuthState } from '@/src/store/auth';
 
-const USERNAME = 'trung@gmail.com';
-
 describe('authSlice', () => {
   it('should return the initial state', () => {
     expect(authSlice.reducer(undefined, { type: 'unknown' })).toEqual({
@@ -12,21 +10,38 @@ describe('authSlice', () => {
 
   it('should login user', () => {
     const previousState: IAuthState = {
-      user: '',
+      user: {
+        id: 0,
+        username: '',
+        token: '',
+      },
     };
 
     expect(
-      authSlice.reducer(previousState, authActions.login({ user: USERNAME }))
-    ).toEqual({ user: USERNAME });
+      authSlice.reducer(
+        previousState,
+        authActions.login({
+          user: {
+            id: 1,
+            username: 'test',
+            token: 'testtoken',
+          },
+        })
+      ).user.token
+    ).toEqual('testtoken');
   });
 
   it('should logout user', () => {
     const previousState: IAuthState = {
-      user: USERNAME,
+      user: {
+        id: 1,
+        username: 'test',
+        token: 'testtoken',
+      },
     };
 
-    expect(authSlice.reducer(previousState, authActions.logout())).toEqual({
-      user: '',
-    });
+    expect(
+      authSlice.reducer(previousState, authActions.logout()).user.token
+    ).toEqual('');
   });
 });

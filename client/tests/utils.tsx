@@ -16,7 +16,11 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 
 export const initialState = {
   auth: {
-    user: '',
+    user: {
+      id: 0,
+      username: '',
+      token: '',
+    },
   },
   video: {
     items: [],

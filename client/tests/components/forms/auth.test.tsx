@@ -7,9 +7,12 @@ const FORM_PROPS = {
   description: 'Testing Form Description',
   btnText: 'Submit',
   onSubmit: vi.fn(),
-  link: {
+  formSide: 'left' as 'left' | 'right',
+  otherSide: {
+    title: 'Register',
+    description: 'Register',
     href: '/',
-    text: 'Go back',
+    btnText: 'Register',
   },
 };
 
@@ -49,8 +52,8 @@ describe('Auth Form', () => {
   });
 
   it('should render link text', async () => {
-    const link = await rendered.findByText(FORM_PROPS.link.text);
+    const link = await rendered.findByText(FORM_PROPS.otherSide.btnText);
     expect(link).toBeTruthy();
-    expect(link.getAttribute('href')).toBe(FORM_PROPS.link.href);
+    expect(link.getAttribute('href')).toBe(FORM_PROPS.otherSide.href);
   });
 });

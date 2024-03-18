@@ -11,6 +11,11 @@ export default defineConfig({
       '@/src': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      external: 'react-lines-ellipsis',
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

@@ -7,7 +7,13 @@ describe('Navbar', () => {
 
   const preloadedState = {
     ...initialState,
-    auth: { user: 'trung@gmail.com' },
+    auth: {
+      user: {
+        id: 1,
+        username: 'trung@gmail.com',
+        token: 'testtoken',
+      },
+    },
   };
 
   beforeEach(() => {

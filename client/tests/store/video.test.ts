@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { VIDEOS, videoSlice } from '@/src/store/video';
+import { videoSlice } from '@/src/store/video';
 
 describe('videoSlice', () => {
   it('should return the initial state', () => {
     expect(videoSlice.reducer(undefined, { type: 'unknown' })).toEqual({
-      items: VIDEOS,
+      items: [],
     });
   });
 

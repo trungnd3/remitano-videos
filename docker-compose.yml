@@ -15,6 +15,7 @@ services:
       - PGDATABASE=$PGDATABASE
       - PGPASSWORD=$PGPASSWORD
       - PGPORT=$PGPORT
+      - SECRET_KEY=$SECRET_KEY
   nginx:
     image: 'trunglinh53/remitano-videos-nginx'
     mem_limit: 256m

@@ -15,7 +15,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/src/store';
-import LinesEllipsis from 'react-lines-ellipsis';
+import TextTruncate from 'react-text-truncate';
 import { MouseEventHandler } from 'react';
 
 interface VideoCardProps {
@@ -44,12 +44,11 @@ export default function VideoCard({
           onClick={onHeaderClick}
         >
           <CardTitle className='text-xl'>
-            <LinesEllipsis
+            <TextTruncate
+              line={2}
+              element='span'
+              truncateText='…'
               text={video.title}
-              maxLine='2'
-              ellipsis='...'
-              trimRight
-              basedOn='letters'
             />
           </CardTitle>
         </CardHeader>

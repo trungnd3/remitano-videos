@@ -21,7 +21,11 @@ export default function Home() {
       {!!videos && !!videos.length && (
         <div className='my-8 grid grid-cols sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
           {videos.map((video) => (
-            <VideoCard video={video} onHeaderClick={cardClickHandler}>
+            <VideoCard
+              video={video}
+              onHeaderClick={cardClickHandler}
+              key={video.youtubeId}
+            >
               <CardImage
                 className='w-full cursor-pointer'
                 src={video.thumbnailUrl}

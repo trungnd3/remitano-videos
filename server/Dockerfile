@@ -12,10 +12,10 @@ RUN go mod download && go mod verify
 COPY . .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping
+RUN CGO_ENABLED=0 GOOS=linux go build -o remitano-server .
 
 EXPOSE 5000
 
 # Run
-CMD ["/docker-gs-ping"]
+CMD ["./remitano-server"]
 

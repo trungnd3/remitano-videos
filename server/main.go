@@ -47,6 +47,7 @@ func main() {
 	routes := router.NewRouter(userController, videoController)
 
 	server := &http.Server{
+		Addr:		":5000",
 		Handler: routes,
 	}
 

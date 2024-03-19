@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"errors"
+	"time"
 
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/helper"
@@ -19,23 +21,32 @@ func NewVideoRepoImpl(Db *gorm.DB) VideoRepo {
 
 // Delete implements VideoRepo.
 func (v *VideoRepoImpl) Delete(videoId int) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var vid model.Video
-	result := v.Db.Where("id = ?", videoId).Delete(&vid)
+	result := v.Db.WithContext(ctx).Where("id = ?", videoId).Delete(&vid)
 	helper.ErrorPanic(result.Error)
 }
 
 // FindAll implements VideoRepo.
 func (v *VideoRepoImpl) FindAll() []model.Video {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var videos []model.Video
-	result := v.Db.Find(&videos)
+	result := v.Db.WithContext(ctx).Find(&videos)
 	helper.ErrorPanic(result.Error)
 	return videos
 }
 
 // FindById implements VideoRepo.
 func (v *VideoRepoImpl) FindById(videoId int) (model.Video, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var video model.Video
-	result := v.Db.Find(&video, videoId)
+	result := v.Db.WithContext(ctx).Find(&video, videoId)
 	if result != nil {
 		return video, nil
 	}
@@ -44,8 +55,11 @@ func (v *VideoRepoImpl) FindById(videoId int) (model.Video, error) {
 
 // FindByYoutubeId implements VideoRepo.
 func (v *VideoRepoImpl) FindByYoutubeId(youtubeId string) (*model.Video, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var vid = &model.Video{}
-	v.Db.Where(&model.Video{YoutubeId: youtubeId}).First(&vid)
+	v.Db.WithContext(ctx).Where(&model.Video{YoutubeId: youtubeId}).First(&vid)
 	if vid.Id > 0 {
 		return vid, nil
 	}
@@ -54,13 +68,18 @@ func (v *VideoRepoImpl) FindByYoutubeId(youtubeId string) (*model.Video, error) 
 
 // Save implements VideoRepo.
 func (v *VideoRepoImpl) Save(video model.Video) (int, error) {
-	// v.Db.Model(&video).Association("User").Append(&model.User{Username: video.User.Username})
-	result := v.Db.Create(&video)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	result := v.Db.WithContext(ctx).Create(&video)
 	return video.Id, result.Error
 }
 
 // Update implements VideoRepo.
 func (v *VideoRepoImpl) Update(video model.Video) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var updateVideo = request.UpdateVideo{
 		Id: video.Id,
 		Title: video.Title,
@@ -71,6 +90,6 @@ func (v *VideoRepoImpl) Update(video model.Video) {
 		Dislikes: video.Dislikes,
 	}
 
-	result := v.Db.Model(&video).Updates(updateVideo)
+	result := v.Db.WithContext(ctx).Model(&video).Updates(updateVideo)
 	helper.ErrorPanic(result.Error)
 }

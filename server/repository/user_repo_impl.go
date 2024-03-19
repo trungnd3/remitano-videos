@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"errors"
+	"time"
 
 	"github.com/trungnd3/remitano-videos/data/request"
 	"github.com/trungnd3/remitano-videos/helper"
@@ -19,18 +21,24 @@ func NewUserRepoImpl(Db *gorm.DB) UserRepo {
 
 // Save implements UserRepo.
 func (u *UserRepoImpl) Save(user model.User) (int, error) {
-	result := u.Db.Create(&user)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	result := u.Db.WithContext(ctx).Create(&user)
 	return user.Id, result.Error
 }
 
 // Update implements UserRepo.
 func (u *UserRepoImpl) Update(user model.User) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var updateUser = request.UpdateUser{
 		Id: user.Id,
 		Token: user.Token,
 		RefreshToken: user.RefreshToken,
 	}
-	result := u.Db.Model(&user).Updates(updateUser)
+	result := u.Db.WithContext(ctx).Model(&user).Updates(updateUser)
 	helper.ErrorPanic(result.Error)
 }
 
@@ -44,16 +52,22 @@ func (u *UserRepoImpl) Associate(user model.User, video model.Video) {
 
 // FindAll implements UserRepo.
 func (u *UserRepoImpl) FindAll() []model.User {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var users []model.User
-	result := u.Db.Find(&users)
+	result := u.Db.WithContext(ctx).Find(&users)
 	helper.ErrorPanic(result.Error)
 	return users
 }
 
 // FindById implements UserRepo.
 func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var user model.User
-	result := u.Db.Find(&user, userId)
+	result := u.Db.WithContext(ctx).Find(&user, userId)
 	if result != nil {
 		return user, nil
 	} else {
@@ -63,8 +77,11 @@ func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
 
 // FindByUsername implements UserRepo.
 func (u *UserRepoImpl) FindByUsername(username string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var user = &model.User{}
-	u.Db.Where(&model.User{Username: username}).First(&user)
+	u.Db.WithContext(ctx).Where(&model.User{Username: username}).First(&user)
 	if user.Id > 0 {
 		return user, nil
 	}
@@ -73,7 +90,10 @@ func (u *UserRepoImpl) FindByUsername(username string) (*model.User, error) {
 
 // Delete implements UserRepo.
 func (u *UserRepoImpl) Delete(userId int) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	var user model.User
-	result := u.Db.Where("id = ?", userId).Delete(&user)
+	result := u.Db.WithContext(ctx).Where("id = ?", userId).Delete(&user)
 	helper.ErrorPanic(result.Error)
 }

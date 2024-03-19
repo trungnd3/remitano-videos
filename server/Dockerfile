@@ -12,10 +12,10 @@ RUN go mod download && go mod verify
 COPY . .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /remitano-server .
+RUN go build -o /usr/local/bin/remitano .
 
 EXPOSE 5000
 
 # Run
-CMD ["/remitano-server"]
+CMD ["remitano"]
 

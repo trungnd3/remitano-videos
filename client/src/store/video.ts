@@ -112,7 +112,11 @@ export const videoSlice = createSlice({
       state.items = action.payload.items;
     },
     add(state, action: PayloadAction<IVideo>) {
-      state.items = [...state.items, action.payload];
+      if (!state.items || state.items.length === 0) {
+        state.items = [{ ...action.payload }];
+      } else {
+        state.items = [...state.items, action.payload];
+      }
     },
     updatePrefer(state, action: PayloadAction<IReplacePrefer>) {
       const updatedItems = [...state.items];

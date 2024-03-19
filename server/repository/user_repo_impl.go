@@ -18,9 +18,9 @@ func NewUserRepoImpl(Db *gorm.DB) UserRepo {
 }
 
 // Save implements UserRepo.
-func (u *UserRepoImpl) Save(user model.User) {
+func (u *UserRepoImpl) Save(user model.User) (int, error) {
 	result := u.Db.Create(&user)
-	helper.ErrorPanic(result.Error)
+	return user.Id, result.Error
 }
 
 // Update implements UserRepo.
@@ -64,11 +64,11 @@ func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
 // FindByUsername implements UserRepo.
 func (u *UserRepoImpl) FindByUsername(username string) (*model.User, error) {
 	var user = &model.User{}
-	result := u.Db.Where(&model.User{Username: username}).First(&user)
-	if result.Error != nil {
-		return nil, errors.New("User not found")
+	u.Db.Where(&model.User{Username: username}).First(&user)
+	if user.Id > 0 {
+		return user, nil
 	}
-	return user, nil
+	return nil, errors.New("User not found")
 }
 
 // Delete implements UserRepo.

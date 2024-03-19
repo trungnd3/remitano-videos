@@ -40,6 +40,9 @@ func (uc *UserController) Create(ctx *gin.Context) {
 		apiResponse.Code = http.StatusConflict
 		apiResponse.Status = "Confict"
 		apiResponse.Data = err.Error()
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(apiResponse.Code, apiResponse)
+		return
 	}
 	apiResponse.Data = &response.User{
 		Id: id,

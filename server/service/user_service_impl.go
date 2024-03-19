@@ -50,8 +50,8 @@ func (us *UserServiceImpl) Create(user request.CreateUser) (int, string, error) 
 		Token: 		token,
 		RefreshToken: refreshToken,
 	}
-	us.UserRepo.Save(userModel)
-	return userData.Id, token, nil
+	createdId, err := us.UserRepo.Save(userModel)
+	return createdId, token, err
 }
 
 func (us *UserServiceImpl) SignIn(user request.CreateUser) (int, string, error) {

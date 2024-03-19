@@ -49,15 +49,19 @@ After you get Docker Engine / Desktop up and running:
 git clone https://github.com/trungnd3/remitano-videos.git
 ```
 
-3. Change to the cloned project directory and open terminal.
+3. Change to the cloned project directory.
 
-4. Create external volume for postgres container:
+4. Create a new `.env` file from `env.txt` file. It is recommended to use the postgres values the same as sample.
+
+5. Open terminal from the cloned project directory
+
+6. Create external volume for postgres container:
 
 ```
 docker volume create dbremitano
 ```
 
-5. Run the following command to start the docker containers in daemon mode (free your terminal after start):
+7. Run the following command to start the docker containers in daemon mode (free your terminal after start):
 
 ```
 docker compose -f docker-compose-dev.yml up -d --build
@@ -75,7 +79,7 @@ If you want to stop the docker containers, run this command:
 docker compose -f docker-compose-dev.yml down
 ```
 
-6. After few miniutes the project will up and run via `localhost:3050`. The terminal will also running the test suites in watch mode.
+8. After few miniutes the project will up and run via `localhost:3050`. The terminal will also running the test suites in watch mode.
 
 ## Usage
 
@@ -95,7 +99,7 @@ docker compose -f docker-compose-dev.yml down
 
 ## Troubleshooting
 
-1. On step 5 of **Running the App** section, when running docker compose to start the app, there is a potential issue related to `registry-1.docker.io` connection:
+1. On step 7 of **Running the App** section, when running docker compose to start the app, there is a potential issue related to `registry-1.docker.io` connection:
 
 ```
 failed to solve: node:18-alpine: failed to do request: Head "https://registry-1.docker.io/v2/library/node/manifests/18-alpine": dialing registry-1.docker.io:443 with direct connection: connecting to 2600:1f18:2148:bc01:571f:e759:a87a:2961:443: dial tcp [2600:1f18:2148:bc01:571f:e759:a87a:2961]:443: connect: no route to host

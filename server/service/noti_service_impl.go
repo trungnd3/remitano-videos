@@ -3,6 +3,7 @@ package service
 import (
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -37,16 +38,15 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		origin := r.Header.Get("Origin")
+		originParts := strings.Split(origin, "://")
+		originHost := originParts[1]
+		log.Info().Msgf("origin host: %s", originHost)
 		localPort := os.Getenv("LOCAL_PORT")
 		if localPort != "" {
-			return origin == "http://" + r.Host + ":" + localPort
+			return originHost == r.Host + ":" + localPort
 		}
-		log.Info().Msgf("Origin header: %s", origin)
-		log.Info().Msgf("Host: %s", r.Host)
-		log.Info().Msgf("Proto: %s", r.Proto)
-		log.Info().Msgf("Port: %s", localPort)
 
-		return origin == r.Host
+		return originHost == r.Host
 	},
 }
 

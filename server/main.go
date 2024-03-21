@@ -31,6 +31,9 @@ func main() {
 	db.Table("users").AutoMigrate(&model.User{})
 	db.Table("videos").AutoMigrate(&model.Video{})
 
+	hub := service.NewHub()
+	go hub.Run()
+
 	// Repository
 	userRepository := repository.NewUserRepoImpl(db)
 	videoRepository := repository.NewVideoRepoImpl(db)
@@ -38,13 +41,15 @@ func main() {
 	// Service
 	userService := service.NewUserServiceImpl(userRepository, validate)
 	videoService := service.NewVideoServiceImpl(userRepository, videoRepository, validate)
+	notiService := service.NewNotiServiceImpl(userRepository, videoRepository)
 
 	// Controller
 	userController := controller.NewUserController(userService)
 	videoController := controller.NewVideoController(videoService)
+	notiController := controller.NewNotiController(notiService, hub)
 
 	// Router
-	routes := router.NewRouter(userController, videoController)
+	routes := router.NewRouter(userController, videoController, notiController)
 
 	server := &http.Server{
 		Addr:		":5000",

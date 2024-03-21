@@ -11,10 +11,15 @@ export default defineConfig({
       '@/src': path.resolve(__dirname, './src'),
     },
   },
-  build: {
-    rollupOptions: {
-      // external: 'react-lines-ellipsis',
-    },
+  server: {
+    host: true,
+    port: 3000,
+    hmr: false,
+    // hmr: {
+    //   host: 'localhost',
+    //   port: 3300,
+    //   protocol: 'ws',
+    // },
   },
   test: {
     globals: true,

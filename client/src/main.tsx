@@ -5,14 +5,17 @@ import { Provider } from 'react-redux';
 
 import App from './App';
 import store from './store';
+import { WebSocketContextProvider } from './context';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <WebSocketContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </WebSocketContextProvider>
     </Provider>
   </React.StrictMode>
 );

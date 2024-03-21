@@ -1,14 +1,32 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { ShareForm } from '@/src/components/forms';
-import { shareVideo, useAppDispatch } from '@/src/store';
+import { shareVideo, useAppDispatch, useAppSelector } from '@/src/store';
+import { WebSocketContext } from '@/src/context';
 
 export default function Share() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const token = useAppSelector((state) => state.auth.user.token);
+  const { ready, send } = useContext(WebSocketContext);
 
   const submitHandler = async (url: string) => {
     dispatch(
-      shareVideo(url, () => {
+      shareVideo(url, (id: number) => {
+        if (ready && send) {
+          send(
+            JSON.stringify({
+              auth: {
+                token,
+              },
+              query: {
+                type: 'SHARE',
+                videoId: id,
+              },
+            })
+          );
+        }
         navigate('/');
       })
     );

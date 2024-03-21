@@ -28,7 +28,6 @@ export function fetchVideos() {
     try {
       const data = await getWithAuth<IVideo[]>('videos');
       if (data.code === 200) {
-        console.log(data);
         dispatch(videoActions.replace({ items: data.data }));
       } else {
         toast({
@@ -43,16 +42,15 @@ export function fetchVideos() {
   };
 }
 
-export function shareVideo(url: string, callback?: () => void) {
-  return async function (dispatch: AppThunkDispatch) {
+export function shareVideo(url: string, callback?: (id: number) => void) {
+  return async function () {
     try {
       const data = await postWithAuth<IVideo>(
         'videos',
         JSON.stringify({ url })
       );
       if (data.code === 200) {
-        dispatch(videoActions.add(data.data));
-        if (!!callback) callback();
+        if (!!callback) callback(data.data.id);
       } else {
         toast({
           title: 'Unable to share video',
@@ -76,21 +74,19 @@ interface IReplacePrefer {
   dislikes: number[];
 }
 
-export function preferVideo(id: number, liked: boolean) {
-  return async function (dispatch: AppThunkDispatch) {
+export function preferVideo(
+  id: number,
+  liked: boolean,
+  callback?: (videoId: number, liked: boolean) => void
+) {
+  return async function () {
     try {
       const data = await postWithAuth<IPreferVideo>(
         'videos/prefer',
         JSON.stringify({ id, liked })
       );
       if (data.code === 200) {
-        dispatch(
-          videoActions.updatePrefer({
-            id,
-            likes: data.data.likes,
-            dislikes: data.data.dislikes,
-          })
-        );
+        if (!!callback) callback(id, liked);
       } else {
         toast({
           title: 'Unable to share video',

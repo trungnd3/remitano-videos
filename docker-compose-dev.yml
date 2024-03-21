@@ -21,7 +21,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile.dev
     ports:
-      - 3050:80
+      - 3300:80
     depends_on:
       - api
       - client
@@ -38,6 +38,7 @@ services:
       PGPASSWORD: ${POSTGRES_PASSWORD}
       PGPORT: ${POSTGRES_PORT}
       SECRET_KEY: ${SECRET_KEY}
+      ORIGIN_URL: ${ORIGIN_URL}
     depends_on:
       - postgres
   client:
@@ -47,16 +48,14 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
-    environment:
-      - WDS_SOCKET_PORT=0
-  tests:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./client:/app
-    command: ['npm', 'run', 'test']
+  # tests:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./client:/app
+  #   command: ['npm', 'run', 'test']
 volumes:
   dbremitano:
     external: true

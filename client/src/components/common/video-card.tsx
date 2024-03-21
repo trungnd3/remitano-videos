@@ -1,4 +1,6 @@
+import { useContext, MouseEventHandler } from 'react';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
+import TextTruncate from 'react-text-truncate';
 
 import {
   Card,
@@ -15,8 +17,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/src/store';
-import TextTruncate from 'react-text-truncate';
-import { MouseEventHandler } from 'react';
+import { WebSocketContext } from '@/src/context';
 
 interface VideoCardProps {
   video: IVideo;
@@ -31,6 +32,29 @@ export default function VideoCard({
 }: VideoCardProps) {
   const loggedInUser = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.user.token);
+  const { ready, send } = useContext(WebSocketContext);
+
+  const likeHandler = (liked: boolean) => {
+    dispatch(
+      preferVideo(video.id, liked, (videoId: number, liked: boolean) => {
+        if (ready && send) {
+          send(
+            JSON.stringify({
+              auth: {
+                token,
+              },
+              query: {
+                type: liked ? 'LIKE' : 'DISLIKE',
+                videoId,
+              },
+            })
+          );
+        }
+      })
+    );
+  };
+
   return (
     <Card
       key={video.id}
@@ -63,13 +87,13 @@ export default function VideoCard({
         </div>
         <div className='flex gap-4'>
           <Prefer
-            handler={() => dispatch(preferVideo(video.id, true))}
+            handler={() => likeHandler(true)}
             Icon={ThumbsUp}
             count={video.likes.length}
             active={video.likes.includes(loggedInUser.id)}
           />
           <Prefer
-            handler={() => dispatch(preferVideo(video.id, false))}
+            handler={() => likeHandler(false)}
             Icon={ThumbsDown}
             count={video.dislikes.length}
             active={video.dislikes.includes(loggedInUser.id)}

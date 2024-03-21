@@ -13,6 +13,7 @@ import (
 func NewRouter(
 	userController *controller.UserController,
 	videoController *controller.VideoController,
+	notiController *controller.NotiController,
 ) *gin.Engine {
 	router := gin.Default()
 
@@ -36,6 +37,8 @@ func NewRouter(
 	// videosGroup.GET("/:userId", videoController.FindById)
 	videosGroup.POST("", videoController.Share)
 	videosGroup.POST("/prefer", videoController.Prefer)
+
+	router.GET("/ws", notiController.ServeWebsocket)
 
 	return router
 }

@@ -76,3 +76,7 @@ export async function postWithAuth<T>(route: string, body: string) {
 
   return data;
 }
+
+export function isSocketOpen(ws: WebSocket) {
+  return ws.readyState === ws.OPEN;
+}

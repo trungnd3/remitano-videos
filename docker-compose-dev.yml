@@ -38,7 +38,7 @@ services:
       PGPASSWORD: ${POSTGRES_PASSWORD}
       PGPORT: ${POSTGRES_PORT}
       SECRET_KEY: ${SECRET_KEY}
-      ORIGIN_URL: ${ORIGIN_URL}
+      LOCAL_PORT: ${LOCAL_PORT}
     depends_on:
       - postgres
   client:

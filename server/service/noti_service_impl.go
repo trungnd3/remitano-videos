@@ -37,7 +37,16 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		origin := r.Header.Get("Origin")
-		return origin == os.Getenv("ORIGIN_URL")
+		localPort := os.Getenv("LOCAL_PORT")
+		if localPort != "" {
+			return origin == "http://" + r.Host + ":" + localPort
+		}
+		log.Info().Msgf("Origin header: %s", origin)
+		log.Info().Msgf("Host: %s", r.Host)
+		log.Info().Msgf("Proto: %s", r.Proto)
+		log.Info().Msgf("Port: %s", localPort)
+
+		return origin == r.Host
 	},
 }
 

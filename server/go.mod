@@ -4,6 +4,7 @@ go 1.22.1
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/gorilla/websocket v1.5.1
 	github.com/rs/zerolog v1.32.0
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.7
@@ -11,7 +12,6 @@ require (
 
 require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
-	github.com/gorilla/websocket v1.5.1 // indirect
 	gorm.io/driver/mysql v1.4.7 // indirect
 )
 

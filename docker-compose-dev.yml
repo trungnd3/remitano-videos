@@ -48,14 +48,14 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
-  # tests:
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile.dev
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./client:/app
-  #   command: ['npm', 'run', 'test']
+  client-test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    command: ['npm', 'run', 'test']
 volumes:
   dbremitano:
     external: true

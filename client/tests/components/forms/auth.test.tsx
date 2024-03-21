@@ -9,8 +9,8 @@ const FORM_PROPS = {
   onSubmit: vi.fn(),
   formSide: 'left' as 'left' | 'right',
   otherSide: {
-    title: 'Register',
-    description: 'Register',
+    title: 'Testing Register Title',
+    description: 'Testing Register Side Description',
     href: '/',
     btnText: 'Register',
   },
@@ -30,10 +30,11 @@ describe('Auth Form', () => {
   });
 
   it('should render 2 inputs with correct placeholder', async () => {
-    const inputs = await rendered.findAllByRole('textbox');
+    const userInput = await rendered.findByRole('textbox');
+    const passwordInput = await rendered.findByRole('password');
 
-    expect(inputs[0].getAttribute('placeholder')).toBe('Username');
-    expect(inputs[1].getAttribute('placeholder')).toBe('Password');
+    expect(userInput.getAttribute('placeholder')).toBe('Username');
+    expect(passwordInput.getAttribute('placeholder')).toBe('Password');
   });
 
   it('should render submit button with correct text', async () => {
@@ -44,9 +45,10 @@ describe('Auth Form', () => {
 
   it('should trigger the onSubmit function by clicking submit button', async () => {
     const form = await rendered.findByRole('form');
-    const inputs = await rendered.findAllByRole('textbox');
-    fireEvent.change(inputs[0], { target: { value: 'trung@gmail.com' } });
-    fireEvent.change(inputs[1], { target: { value: '12345' } });
+    const userInput = await rendered.findByRole('textbox');
+    const passwordInput = await rendered.findByRole('password');
+    fireEvent.change(userInput, { target: { value: 'trung@gmail.com' } });
+    fireEvent.change(passwordInput, { target: { value: '12345' } });
     fireEvent.submit(form);
     expect(FORM_PROPS.onSubmit).toHaveBeenCalled();
   });

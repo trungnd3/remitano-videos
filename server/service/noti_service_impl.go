@@ -40,7 +40,6 @@ var upgrader = websocket.Upgrader{
 		origin := r.Header.Get("Origin")
 		originParts := strings.Split(origin, "://")
 		originHost := originParts[1]
-		log.Info().Msgf("origin host: %s", originHost)
 		localPort := os.Getenv("LOCAL_PORT")
 		if localPort != "" {
 			return originHost == r.Host + ":" + localPort

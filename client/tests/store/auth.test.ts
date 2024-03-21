@@ -2,20 +2,22 @@ import { describe, expect, it } from 'vitest';
 import { authSlice, authActions, IAuthState } from '@/src/store/auth';
 
 describe('authSlice', () => {
+  const initialState = {
+    user: {
+      id: 0,
+      username: '',
+      token: '',
+    },
+  };
+
   it('should return the initial state', () => {
-    expect(authSlice.reducer(undefined, { type: 'unknown' })).toEqual({
-      user: '',
-    });
+    expect(authSlice.reducer(undefined, { type: 'unknown' })).toEqual(
+      initialState
+    );
   });
 
   it('should login user', () => {
-    const previousState: IAuthState = {
-      user: {
-        id: 0,
-        username: '',
-        token: '',
-      },
-    };
+    const previousState: IAuthState = initialState;
 
     expect(
       authSlice.reducer(

@@ -9,7 +9,7 @@ describe('Error', () => {
   };
 
   const backLink = {
-    text: 'Go back to Home',
+    text: 'Go back Home',
     href: '/',
   };
 

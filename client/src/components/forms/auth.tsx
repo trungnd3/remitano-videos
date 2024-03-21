@@ -91,6 +91,7 @@ export default function AuthForm({
                 onChange={(e) => setUsername(e.target.value)}
               />
               <Input
+                role='password'
                 type='password'
                 placeholder='Password'
                 value={password}

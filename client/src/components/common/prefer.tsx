@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react';
 import { Button } from '../ui/button';
 import { LucideIcon } from 'lucide-react';
 
-interface PreferProps {
+export interface PreferProps {
   handler: MouseEventHandler<HTMLButtonElement>;
   Icon: LucideIcon;
   count: number;

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import {
   Sheet,
   SheetContent,
@@ -13,7 +14,6 @@ import {
 } from '@/src/components/ui/avatar';
 import { Button } from '@/src/components/ui/button';
 import { authActions, useAppDispatch, useAppSelector } from '@/src/store';
-import { useNavigate } from 'react-router-dom';
 
 export default function Sidebar() {
   const user = useAppSelector((state) => state.auth.user);

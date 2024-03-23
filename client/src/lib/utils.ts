@@ -80,3 +80,39 @@ export async function postWithAuth<T>(route: string, body: string) {
 export function isSocketOpen(ws: WebSocket) {
   return ws.readyState === ws.OPEN;
 }
+
+export const calculateRemainingTime = (expirationTime: number) => {
+  const currentTime = new Date().getTime();
+  const adjExpirationTime = new Date(expirationTime).getTime();
+
+  const remainingDuration = adjExpirationTime - currentTime;
+
+  return remainingDuration;
+};
+
+export const retreiveStoredToken = () => {
+  const storedUser = localStorage.getItem('user');
+  if (!storedUser) {
+    return null;
+  }
+
+  try {
+    const storedToken = JSON.parse(storedUser).token;
+    const storeExpirationDate = JSON.parse(storedUser).tokenExpiresAt;
+
+    const remainingTime = calculateRemainingTime(storeExpirationDate);
+
+    if (remainingTime <= 60000) {
+      localStorage.removeItem('user');
+      return null;
+    }
+
+    return {
+      token: storedToken,
+      duration: remainingTime,
+    };
+  } catch (error) {
+    console.log('Cannot retreive token', error);
+    return null;
+  }
+};

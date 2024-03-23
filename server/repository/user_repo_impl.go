@@ -62,17 +62,16 @@ func (u *UserRepoImpl) FindAll() []model.User {
 }
 
 // FindById implements UserRepo.
-func (u *UserRepoImpl) FindById(userId int) (model.User, error) {
+func (u *UserRepoImpl) FindById(userId int) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	var user model.User
-	result := u.Db.WithContext(ctx).Find(&user, userId)
-	if result != nil {
+	var user = &model.User{}
+	u.Db.WithContext(ctx).Find(&user, userId)
+	if user.Id > 0 {
 		return user, nil
-	} else {
-		return user, errors.New("User not found")
 	}
+	return nil, errors.New("User not found")
 }
 
 // FindByUsername implements UserRepo.

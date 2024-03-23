@@ -3,12 +3,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunkDispatch } from '.';
 import { toast } from '@/src/components/ui/use-toast';
 
+export interface IUser {
+  id: number;
+  username: string;
+  token: string;
+  tokenExpiresAt: number;
+}
+
 export interface IAuthState {
-  user: {
-    id: number;
-    username: string;
-    token: string;
-  };
+  user: IUser;
 }
 
 const initialState: IAuthState = {
@@ -16,11 +19,16 @@ const initialState: IAuthState = {
     id: 0,
     username: '',
     token: '',
+    tokenExpiresAt: 0,
   },
 };
 
-export function signInUser(username: string, password: string) {
-  return async function (dispatch: AppThunkDispatch) {
+export function signInUser(
+  username: string,
+  password: string,
+  callback: (user: IUser) => void
+) {
+  return async function () {
     try {
       const response = await fetch('/api/users/signin', {
         method: 'POST',
@@ -36,10 +44,10 @@ export function signInUser(username: string, password: string) {
         const user = {
           id: data.data.id,
           token: data.data.token,
+          tokenExpiresAt: data.data.tokenExpiresAt,
           username: username,
         };
-        localStorage.setItem('user', JSON.stringify(user));
-        dispatch(authActions.login({ user }));
+        callback(user);
       } else {
         toast({
           title: data.data,
@@ -56,7 +64,6 @@ export function signInUser(username: string, password: string) {
 export function createUser(username: string, password: string) {
   return async function (dispatch: AppThunkDispatch) {
     try {
-      console.log('dispatcher - bfore create user', username);
       const response = await fetch('/api/users', {
         method: 'POST',
         body: JSON.stringify({
@@ -71,6 +78,7 @@ export function createUser(username: string, password: string) {
         const user = {
           id: data.data.id,
           token: data.data.token,
+          tokenExpiresAt: data.data.tokenExpiresAt,
           username: username,
         };
         localStorage.setItem('user', JSON.stringify(user));

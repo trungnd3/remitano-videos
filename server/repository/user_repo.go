@@ -7,7 +7,7 @@ type UserRepo interface {
 	Update(user model.User)
 	Associate(user model.User, video model.Video)
 	Delete(userId int)
-	FindById(userId int) (model.User, error)
+	FindById(userId int) (*model.User, error)
 	FindByUsername(username string) (*model.User, error)
 	FindAll() []model.User
 }

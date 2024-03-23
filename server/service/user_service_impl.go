@@ -27,22 +27,22 @@ func NewUserServiceImpl(userRepo repository.UserRepo, validate *validator.Valida
 }
 
 // Create implements UserService.
-func (us *UserServiceImpl) Create(user request.CreateUser) (int, string, error) {
+func (us *UserServiceImpl) Create(user request.CreateUser) (int, string, int64, error) {
 	err := us.Validate.Struct(user)
 	if err != nil {
 		log.Info().Msgf("Error: %s\n", err.Error())
-		return 0, "", err
+		return 0, "", 0, err
 	}
 
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 	if (userData != nil) {
-		return 0, "", errors.New("User already exists.")
+		return 0, "", 0, errors.New("User already exists.")
 	}
 
 	password := us.HashPassword(user.Password)
 	user.Password = password
 
-	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
+	token, tokenExpiresAt, refreshToken, _ := helper.GenerateAllTokens(user.Username)
 
 	userModel := model.User{
 		Username: user.Username,
@@ -51,22 +51,22 @@ func (us *UserServiceImpl) Create(user request.CreateUser) (int, string, error) 
 		RefreshToken: refreshToken,
 	}
 	createdId, err := us.UserRepo.Save(userModel)
-	return createdId, token, err
+	return createdId, token, tokenExpiresAt, err
 }
 
-func (us *UserServiceImpl) SignIn(user request.CreateUser) (int, string, error) {
+func (us *UserServiceImpl) SignIn(user request.CreateUser) (int, string, int64, error) {
 	userData, err := us.UserRepo.FindByUsername(user.Username)
 
 	if (err != nil || userData == nil) {
-		return 0, "", errors.New("User does not exist")
+		return 0, "", 0, errors.New("User does not exist")
 	}
 
 	passwordIsValid, msg := us.VerifyPassword(user.Password, userData.Password)
 	if passwordIsValid != true {
-		return 0, "", errors.New(msg)
+		return 0, "", 0, errors.New(msg)
 	}
 
-	token, refreshToken, _ := helper.GenerateAllTokens(user.Username)
+	token, tokenExpiresAt, refreshToken, _ := helper.GenerateAllTokens(user.Username)
 	updateUser := &model.User{
 		Id: userData.Id,
 		Token: token,
@@ -74,7 +74,7 @@ func (us *UserServiceImpl) SignIn(user request.CreateUser) (int, string, error) 
 	}
 	us.UserRepo.Update(*updateUser)
 
-	return userData.Id, token, nil
+	return userData.Id, token, tokenExpiresAt, nil
 }
 
 // Delete implements UserService.
@@ -109,12 +109,30 @@ func (us *UserServiceImpl) FindById(userId int) response.User {
 	return user
 }
 
-// Update implements UserService.
-func (us *UserServiceImpl) Update(user request.UpdateUser) {
-	userData, err := us.UserRepo.FindById(user.Id)
-	helper.ErrorPanic(err)
-	us.UserRepo.Update(userData)
-}
+// // Update implements UserService.
+// func (us *UserServiceImpl) UpdateToken(user request.UpdateUser) (string, error) {
+	
+// 	userData, err := us.UserRepo.FindById(user.Id)
+// 	// userData, err := us.UserRepo.FindByUsername(user.Username)
+// 	if (userData != nil) {
+// 		return "", errors.New("User already exists.")
+// 	}
+
+// 	password := us.HashPassword(user.Password)
+// 	user.Password = password
+
+// 	token, expiresIn, refreshToken, _ := helper.GenerateAllTokens(user.Username)
+
+// 	userModel := model.User{
+// 		Username: user.Username,
+// 		Password: user.Password,
+// 		Token: 		token,
+// 		RefreshToken: refreshToken,
+// 	}
+// 	createdId, err := us.UserRepo.Save(userModel)
+// 	return createdId, token, err
+// 	us.UserRepo.Update(userData)
+// }
 
 func (us *UserServiceImpl) HashPassword(password string) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)

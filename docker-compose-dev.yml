@@ -5,6 +5,7 @@ services:
     build:
       context: ./postgres
       dockerfile: Dockerfile.dev
+    container_name: remitano-videos-db
     restart: unless-stopped
     ports:
       - 5432:5432
@@ -15,11 +16,14 @@ services:
       PGDATA: ${PGDATA}
     volumes:
       - dbremitano:/data/postgres-remitano-videos
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
   nginx:
     restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
+    container_name: remitano-videos-nginx
     ports:
       - 3300:80
     depends_on:
@@ -29,6 +33,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
+    container_name: remitano-videos-api
     volumes:
       - ./server:/app
     environment:
@@ -45,17 +50,10 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
+    container_name: remitano-videos-client
     volumes:
       - /app/node_modules
       - ./client:/app
-  client-test:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./client:/app
-    command: ['npm', 'run', 'test']
 volumes:
   dbremitano:
     external: true

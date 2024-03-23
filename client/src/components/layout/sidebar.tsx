@@ -13,16 +13,16 @@ import {
   AvatarImage,
 } from '@/src/components/ui/avatar';
 import { Button } from '@/src/components/ui/button';
-import { authActions, useAppDispatch, useAppSelector } from '@/src/store';
+import { useAppSelector } from '@/src/store';
+import { useAuth } from '@/src/hooks/use-auth';
 
 export default function Sidebar() {
   const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useAppDispatch();
+  const { logoutHandler } = useAuth();
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
-    localStorage.removeItem('user');
-    dispatch(authActions.logout());
+  const onLogout = () => {
+    logoutHandler();
     navigate('/');
   };
 
@@ -43,11 +43,7 @@ export default function Sidebar() {
           <Separator className='my-4' />
           <div className='pt-4 flex items-center justify-end gap-2'>
             <SheetTrigger asChild>
-              <Button
-                variant='outline'
-                onClick={logoutHandler}
-                data-testid='logout'
-              >
+              <Button variant='outline' onClick={onLogout} data-testid='logout'>
                 Logout
               </Button>
             </SheetTrigger>

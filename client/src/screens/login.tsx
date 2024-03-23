@@ -1,11 +1,11 @@
 import { AuthForm } from '@/src/components/forms';
-import { useAppDispatch, signInUser } from '@/src/store';
+import { useAuth } from '../hooks/use-auth';
 
 export default function Login() {
-  const dispatch = useAppDispatch();
+  const { loginHandler } = useAuth();
 
   const submitHandler = (username: string, password: string) => {
-    dispatch(signInUser(username, password));
+    loginHandler(username, password);
   };
 
   return (

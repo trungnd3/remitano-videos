@@ -28,5 +28,6 @@ export default defineConfig({
     alias: {
       '@/tests': path.resolve(__dirname, './tests'),
     },
+    mockReset: true,
   },
 });

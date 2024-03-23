@@ -4,30 +4,20 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from './components/layout';
 import { Error } from './components/common';
 import { Home, Share, Play, Login, Register } from './screens';
-import {
-  IAuthState,
-  authActions,
-  fetchVideos,
-  useAppDispatch,
-  useAppSelector,
-} from './store';
+import { fetchVideos, useAppDispatch, useAppSelector } from './store';
+import { useAuth } from './hooks/use-auth';
 
 function App() {
   let user = useAppSelector((state) => state.auth.user);
+  const { authCheck } = useAuth();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!user.token) {
-      const userStr = localStorage.getItem('user');
-      if (!!userStr) {
-        const userObj: IAuthState['user'] = JSON.parse(userStr);
-        dispatch(authActions.login({ user: { ...userObj } }));
-      }
-    }
+    authCheck();
     if (!!user.token) {
       dispatch(fetchVideos());
     }
-  }, [user.token]);
+  }, [user.token, authCheck]);
 
   return (
     <Layout>

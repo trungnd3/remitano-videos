@@ -97,6 +97,20 @@ docker compose -f docker-compose-dev.yml down
 
 7. On the Home page or Play page, you could like or dislike the video.
 
+## Testing
+
+To run Unit test cases, make sure your docker containers are all up and running. The command for running UT is:
+
+```
+docker exec -it remitano-videos-client npm run test
+```
+
+To run the coverage:
+
+```
+docker exec -it remitano-videos-client npm run coverage
+```
+
 ## Troubleshooting
 
 1. On step 7 of **Running the App** section, when running docker compose to start the app, there is a potential issue related to `registry-1.docker.io` connection:

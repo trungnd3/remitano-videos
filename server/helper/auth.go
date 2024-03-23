@@ -2,11 +2,11 @@ package helper
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/rs/zerolog/log"
 )
 
 type SignedDetails struct {
@@ -15,30 +15,37 @@ type SignedDetails struct {
 }
 
 var SECRET_KEY string = os.Getenv("SECRET_KEY")
+// Token expires in 30 minutes
+var TOKEN_EXPIRED_IN int = 30 * 60
+// Refres token expires in 24 hours
+var REFRESH_TOKEN_EXPIRED_IN int = 24 * 60 * 60
  
-func GenerateAllTokens(username string) (signedToken string, signedRefreshToken string, err error) {
-    claims := &SignedDetails{
-        Username:	username,
-        StandardClaims: jwt.StandardClaims{
-            ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
-        },
-    }
- 
-    refreshClaims := &SignedDetails{
-        StandardClaims: jwt.StandardClaims{
-            ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(168)).Unix(),
-        },
-    }
- 
-    token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
-    refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
- 
-    if err != nil {
-        log.Panic(err)
-        return
-    }
- 
-    return token, refreshToken, err
+func GenerateAllTokens(username string) (string, int64, string, error) {
+	tokenExpiresAt := time.Now().Local().Add(time.Second * time.Duration(TOKEN_EXPIRED_IN)).UnixMilli()
+
+	claims := &SignedDetails{
+			Username:	username,
+			StandardClaims: jwt.StandardClaims{
+					ExpiresAt: tokenExpiresAt,
+			},
+	}
+
+	refreshClaims := &SignedDetails{
+			StandardClaims: jwt.StandardClaims{
+					ExpiresAt: time.Now().Local().Add(time.Second * time.Duration(REFRESH_TOKEN_EXPIRED_IN)).UnixMilli(),
+			},
+	}
+
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
+
+	if err != nil {
+			log.Error().Msg(err.Error())
+			return "", 0, "", err
+	}
+
+
+	return token, tokenExpiresAt, refreshToken, err
 }
 
 func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
@@ -70,38 +77,3 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 
 	return claims, msg
 }
-
-// func UpdateAllTokens(signedToken string, signedRefreshToken string, userId string) {
-// 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-
-// 	var updateObj primitive.D
-
-// 	updateObj = append(updateObj, bson.E{Key: "token", Value: signedToken})
-// 	updateObj = append(updateObj, bson.E{Key: "refresh_token", Value: signedRefreshToken})
-
-// 	Updated_at, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-// 	updateObj = append(updateObj, bson.E{Key: "updated_at", Value: Updated_at})
-
-// 	upsert := true
-// 	filter := bson.M{"user_id": userId}
-// 	opt := options.UpdateOptions{
-// 			Upsert: &upsert,
-// 	}
-
-// 	_, err := userCollection.UpdateOne(
-// 			ctx,
-// 			filter,
-// 			bson.D{
-// 					{Key: "$set", Value: updateObj},
-// 			},
-// 			&opt,
-// 	)
-
-// 	defer cancel()
-
-// 	if err != nil {
-// 			log.Panic(err)
-// 			return
-// 	}
-// 	return
-// }

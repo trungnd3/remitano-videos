@@ -7,6 +7,7 @@ describe('authSlice', () => {
       id: 0,
       username: '',
       token: '',
+      tokenExpiresAt: 0,
     },
   };
 
@@ -27,6 +28,7 @@ describe('authSlice', () => {
             id: 1,
             username: 'test',
             token: 'testtoken',
+            tokenExpiresAt: 1711174768928,
           },
         })
       ).user.token
@@ -39,6 +41,7 @@ describe('authSlice', () => {
         id: 1,
         username: 'test',
         token: 'testtoken',
+        tokenExpiresAt: 1711174768928,
       },
     };
 

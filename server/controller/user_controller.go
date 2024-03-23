@@ -29,7 +29,7 @@ func (uc *UserController) Create(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&createUserRequest)
 	helper.ErrorPanic(err)
 
-	id, token, err := uc.UserService.Create(createUserRequest)
+	id, token, tokenExpiresAt, err := uc.UserService.Create(createUserRequest)
 
 	apiResponse := response.Api{
 		Code: http.StatusOK,
@@ -47,23 +47,26 @@ func (uc *UserController) Create(ctx *gin.Context) {
 	apiResponse.Data = &response.User{
 		Id: id,
 		Token: token,
+		TokenExpiresAt: tokenExpiresAt,
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(apiResponse.Code, apiResponse)
 }
 
+// SignIn controller
 func (uc *UserController) SignIn(ctx *gin.Context) {
 	signInRequest := request.CreateUser{}
 	err := ctx.ShouldBindJSON(&signInRequest)
 	helper.ErrorPanic(err)
 
-	id, token, err := uc.UserService.SignIn(signInRequest)
+	id, token, tokenExpiresAt, err := uc.UserService.SignIn(signInRequest)
 	apiResponse := response.Api{
 		Code: http.StatusOK,
 		Status: "OK",
 		Data: &response.User{
 			Id: id,
 			Token: token,
+			TokenExpiresAt: tokenExpiresAt,
 		},
 	}
 	if err != nil {
